@@ -1,0 +1,3950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>CabCalc — Driver Earnings</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0b0e14" />
+<link rel="icon" type="image/png" href="icon-512.png" />
+<style>
+/* ─── RESET & BASE ─── */
+*  {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+background: #0b0e14;
+color: #eef2f6;
+min-height: 100vh;
+padding-bottom: 80px;
+}
+button {
+cursor: pointer;
+font: inherit;
+border: none;
+background: none;
+color: inherit;
+}
+input,
+select {
+font: inherit;
+background: #1a1f2a;
+border: 1px solid #2d3545;
+color: #eef2f6;
+padding: 10px 14px;
+border-radius: 10px;
+width: 100%;
+outline: none;
+transition: border-color 0.2s;
+}
+input:focus,
+select:focus {
+border-color: #4f8cff;
+}
+input::placeholder {
+color: #6a7a8e;
+}
+a {
+color: #4f8cff;
+text-decoration: none;
+}
+a:hover {
+text-decoration: underline;
+}
+
+/* ─── SCREENS ─── */
+.screen {
+display: none;
+padding: 20px 16px 100px;
+max-width: 480px;
+margin: 0 auto;
+animation: fadeUp 0.3s ease;
+}
+.screen.active {
+display: block;
+}
+#main-app {
+display: none;
+padding: 0 0 100px;
+max-width: 480px;
+margin: 0 auto;
+}
+#main-app.active {
+display: block;
+}
+
+@keyframes fadeUp {
+from {
+opacity: 0;
+transform: translateY(12px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+/* ─── LOGIN SCREEN ─── */
+.login-header {
+text-align: center;
+padding: 40px 0 24px;
+}
+.login-header .logo {
+font-size: 48px;
+margin-bottom: 6px;
+}
+.login-header h1 {
+font-size: 26px;
+font-weight: 700;
+letter-spacing: -0.5px;
+}
+.login-header p {
+color: #8a9bb0;
+font-size: 15px;
+margin-top: 4px;
+}
+
+.login-tabs {
+display: flex;
+gap: 6px;
+background: #141a24;
+border-radius: 12px;
+padding: 4px;
+margin: 20px 0 16px;
+}
+.login-tabs button {
+flex: 1;
+padding: 10px 0;
+border-radius: 10px;
+font-weight: 600;
+font-size: 14px;
+color: #8a9bb0;
+transition: all 0.2s;
+}
+.login-tabs button.active {
+background: #2a3346;
+color: #fff;
+}
+
+.login-form {
+display: block;
+}
+.login-form .form-group {
+margin-bottom: 14px;
+}
+.login-form .form-group label {
+display: block;
+font-size: 13px;
+font-weight: 500;
+color: #b0c0d0;
+margin-bottom: 4px;
+}
+.login-form .form-group .input-with-prefix {
+display: flex;
+align-items: center;
+background: #1a1f2a;
+border: 1px solid #2d3545;
+border-radius: 10px;
+overflow: hidden;
+}
+.login-form .form-group .input-with-prefix .prefix {
+padding: 10px 6px 10px 14px;
+color: #8a9bb0;
+font-weight: 600;
+font-size: 14px;
+background: transparent;
+border-right: 1px solid #2d3545;
+white-space: nowrap;
+user-select: none;
+}
+.login-form .form-group .input-with-prefix input {
+border: none;
+border-radius: 0;
+padding: 10px 14px;
+background: transparent;
+}
+.login-form .form-group .input-with-prefix input:focus {
+border-color: transparent;
+}
+
+.btn-primary {
+width: 100%;
+padding: 14px;
+border-radius: 12px;
+background: #4f8cff;
+color: #fff;
+font-weight: 700;
+font-size: 16px;
+transition: background 0.2s;
+margin-top: 6px;
+}
+.btn-primary:hover {
+background: #3a77e6;
+}
+.btn-primary:disabled {
+opacity: 0.5;
+pointer-events: none;
+}
+.btn-secondary {
+width: 100%;
+padding: 14px;
+border-radius: 12px;
+background: #2a3346;
+color: #eef2f6;
+font-weight: 600;
+font-size: 16px;
+transition: background 0.2s;
+}
+.btn-secondary:hover {
+background: #364153;
+}
+.btn-outline {
+padding: 10px 18px;
+border-radius: 10px;
+border: 1px solid #2d3545;
+color: #b0c0d0;
+font-weight: 500;
+transition: all 0.2s;
+}
+.btn-outline:hover {
+background: #1a1f2a;
+border-color: #4f8cff;
+}
+
+.forgot-pw-link {
+display: block;
+text-align: right;
+font-size: 13px;
+margin-top: 6px;
+color: #6a7a8e;
+cursor: pointer;
+}
+.forgot-pw-link:hover {
+color: #4f8cff;
+text-decoration: underline;
+}
+
+.social-login {
+margin-top: 20px;
+text-align: center;
+}
+.social-login .divider {
+display: flex;
+align-items: center;
+gap: 12px;
+color: #6a7a8e;
+font-size: 13px;
+margin-bottom: 14px;
+}
+.social-login .divider::before,
+.social-login .divider::after {
+content: '';
+flex: 1;
+height: 1px;
+background: #2d3545;
+}
+.social-btns {
+display: flex;
+gap: 12px;
+justify-content: center;
+}
+.social-btns button {
+width: 52px;
+height: 52px;
+border-radius: 50%;
+background: #1a1f2a;
+border: 1px solid #2d3545;
+font-size: 22px;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s;
+}
+.social-btns button:hover {
+background: #2a3346;
+border-color: #4f8cff;
+transform: scale(1.04);
+}
+.social-btns .google {
+color: #ea4335;
+}
+.social-btns .facebook {
+color: #1877f2;
+}
+.social-btns .x {
+color: #fff;
+}
+
+/* ─── OTP SECTION ─── */
+.otp-section {
+display: none;
+margin-top: 16px;
+padding: 16px 0;
+border-top: 1px solid #2d3545;
+}
+.otp-section.open {
+display: block;
+}
+.otp-digits {
+display: flex;
+gap: 8px;
+justify-content: center;
+margin: 12px 0;
+}
+.otp-digits input {
+width: 44px;
+height: 52px;
+text-align: center;
+font-size: 22px;
+font-weight: 700;
+background: #141a24;
+border: 1px solid #2d3545;
+border-radius: 10px;
+color: #fff;
+}
+.otp-digits input:focus {
+border-color: #4f8cff;
+}
+.otp-actions {
+display: flex;
+gap: 12px;
+justify-content: center;
+align-items: center;
+flex-wrap: wrap;
+margin-top: 8px;
+}
+.otp-actions .timer {
+color: #6a7a8e;
+font-size: 14px;
+font-weight: 500;
+}
+.otp-actions .resend {
+color: #4f8cff;
+font-weight: 600;
+font-size: 14px;
+cursor: pointer;
+}
+.otp-actions .resend:disabled {
+opacity: 0.4;
+cursor: not-allowed;
+}
+
+/* ─── FORGOT PASSWORD STEPS ─── */
+.forgot-step {
+display: none;
+animation: fadeUp 0.25s ease;
+}
+.forgot-step.active {
+display: block;
+}
+.forgot-step .step-title {
+font-size: 20px;
+font-weight: 700;
+margin-bottom: 4px;
+}
+.forgot-step .step-sub {
+color: #8a9bb0;
+font-size: 14px;
+margin-bottom: 18px;
+}
+.forgot-step .choice-grid {
+display: flex;
+gap: 12px;
+margin: 10px 0 16px;
+}
+.forgot-step .choice-grid button {
+flex: 1;
+padding: 16px 8px;
+border-radius: 12px;
+background: #141a24;
+border: 1px solid #2d3545;
+font-weight: 600;
+font-size: 15px;
+transition: all 0.2s;
+}
+.forgot-step .choice-grid button:hover {
+border-color: #4f8cff;
+background: #1a1f2a;
+}
+.forgot-step .choice-grid button .icon {
+display: block;
+font-size: 28px;
+margin-bottom: 4px;
+}
+
+.back-link {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+color: #8a9bb0;
+font-size: 14px;
+cursor: pointer;
+margin-bottom: 14px;
+padding: 4px 0;
+}
+.back-link:hover {
+color: #eef2f6;
+}
+
+/* ─── ONBOARDING ─── */
+.onboard-progress {
+display: flex;
+gap: 8px;
+justify-content: center;
+margin: 16px 0 20px;
+}
+.onboard-progress .dot {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: #2d3545;
+transition: background 0.3s;
+}
+.onboard-progress .dot.active {
+background: #4f8cff;
+}
+.onboard-progress .dot.done {
+background: #4f8cff;
+opacity: 0.4;
+}
+
+/* ─── MAIN APP HEADER ─── */
+.app-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 16px 10px;
+background: #0b0e14;
+position: sticky;
+top: 0;
+z-index: 20;
+border-bottom: 1px solid #1a1f2a;
+}
+.app-header .brand {
+font-size: 18px;
+font-weight: 700;
+letter-spacing: -0.3px;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.app-header .brand span {
+color: #4f8cff;
+}
+.app-header .avatar-btn {
+width: 38px;
+height: 38px;
+border-radius: 50%;
+background: #1a1f2a;
+border: 1px solid #2d3545;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
+font-weight: 600;
+color: #eef2f6;
+overflow: hidden;
+transition: border-color 0.2s;
+position: relative;
+}
+.app-header .avatar-btn:hover {
+border-color: #4f8cff;
+}
+.app-header .avatar-btn img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+.app-header .avatar-btn .placeholder {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+height: 100%;
+font-size: 16px;
+font-weight: 600;
+color: #b0c0d0;
+}
+
+/* ─── DROPDOWN ─── */
+.dropdown {
+display: none;
+position: absolute;
+top: 52px;
+right: 0;
+background: #141a24;
+border: 1px solid #2d3545;
+border-radius: 12px;
+min-width: 200px;
+padding: 6px 0;
+z-index: 30;
+box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+.dropdown.open {
+display: block;
+}
+.dropdown .dropdown-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 10px 16px;
+font-size: 14px;
+color: #b0c0d0;
+transition: background 0.15s;
+cursor: pointer;
+border: none;
+background: none;
+width: 100%;
+text-align: left;
+}
+.dropdown .dropdown-item:hover {
+background: #1a1f2a;
+color: #fff;
+}
+.dropdown .dropdown-item .icon {
+font-size: 16px;
+width: 22px;
+text-align: center;
+}
+.dropdown .divider {
+height: 1px;
+background: #2d3545;
+margin: 4px 12px;
+}
+
+/* ─── TABS ─── */
+.tabs {
+display: flex;
+gap: 4px;
+background: #141a24;
+padding: 4px;
+border-radius: 12px;
+margin: 12px 16px 16px;
+position: sticky;
+top: 60px;
+z-index: 10;
+}
+.tabs button {
+flex: 1;
+padding: 10px 0;
+border-radius: 10px;
+font-weight: 600;
+font-size: 13px;
+color: #6a7a8e;
+transition: all 0.2s;
+}
+.tabs button.active {
+background: #2a3346;
+color: #fff;
+}
+.tabs button .tab-icon {
+display: block;
+font-size: 18px;
+margin-bottom: 2px;
+}
+
+.tab-content {
+display: none;
+padding: 0 16px 20px;
+}
+.tab-content.active {
+display: block;
+}
+
+/* ─── CARDS ─── */
+.card {
+background: #141a24;
+border: 1px solid #1f2633;
+border-radius: 14px;
+padding: 16px;
+margin-bottom: 14px;
+}
+.card-title {
+font-size: 16px;
+font-weight: 700;
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+.card-title .badge {
+font-size: 12px;
+font-weight: 500;
+color: #8a9bb0;
+background: #1a1f2a;
+padding: 2px 10px;
+border-radius: 20px;
+}
+
+/* ─── STATS BAR ─── */
+.stats-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 14px;
+}
+.stats-grid .stat {
+background: #141a24;
+border: 1px solid #1f2633;
+border-radius: 12px;
+padding: 12px 14px;
+text-align: center;
+}
+.stats-grid .stat .label {
+font-size: 12px;
+color: #6a7a8e;
+text-transform: uppercase;
+letter-spacing: 0.3px;
+}
+.stats-grid .stat .value {
+font-size: 20px;
+font-weight: 700;
+margin-top: 2px;
+}
+.stats-grid .stat .sub {
+font-size: 12px;
+color: #8a9bb0;
+font-weight: 400;
+}
+
+/* ─── TABLE ─── */
+.table-wrap {
+overflow-x: auto;
+margin-top: 4px;
+}
+table {
+width: 100%;
+border-collapse: collapse;
+font-size: 13px;
+}
+table th {
+text-align: left;
+color: #6a7a8e;
+font-weight: 600;
+font-size: 11px;
+text-transform: uppercase;
+letter-spacing: 0.3px;
+padding: 8px 6px;
+border-bottom: 1px solid #1f2633;
+white-space: nowrap;
+}
+table td {
+padding: 8px 6px;
+border-bottom: 1px solid #1a1f2a;
+vertical-align: middle;
+white-space: nowrap;
+}
+table tr:last-child td {
+border-bottom: none;
+}
+.empty-state {
+text-align: center;
+padding: 30px 0 !important;
+color: #6a7a8e;
+font-size: 14px;
+}
+.action-btn {
+padding: 4px 8px;
+border-radius: 6px;
+font-size: 13px;
+background: #1a1f2a;
+color: #b0c0d0;
+transition: all 0.15s;
+border: none;
+}
+.action-btn:hover {
+background: #2a3346;
+color: #fff;
+}
+.action-btn.delete-btn:hover {
+background: #3a1a1a;
+color: #ff6b6b;
+}
+
+/* ─── FAB ─── */
+.fab {
+position: fixed;
+bottom: 24px;
+right: 24px;
+width: 58px;
+height: 58px;
+border-radius: 50%;
+background: #4f8cff;
+color: #fff;
+font-size: 32px;
+display: flex;
+align-items: center;
+justify-content: center;
+box-shadow: 0 6px 24px rgba(79, 140, 255, 0.35);
+transition: all 0.2s;
+z-index: 40;
+border: none;
+}
+.fab:hover {
+transform: scale(1.06);
+background: #3a77e6;
+}
+.fab-hidden {
+display: none !important;
+}
+
+/* ─── MODAL ─── */
+.modal-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.7);
+backdrop-filter: blur(6px);
+z-index: 50;
+justify-content: center;
+align-items: center;
+padding: 20px;
+animation: fadeIn 0.2s ease;
+}
+.modal-overlay.open {
+display: flex;
+}
+.modal {
+background: #141a24;
+border: 1px solid #2d3545;
+border-radius: 18px;
+max-width: 460px;
+width: 100%;
+max-height: 90vh;
+overflow-y: auto;
+padding: 22px 20px 18px;
+animation: slideUp 0.25s ease;
+}
+.modal .modal-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 12px;
+}
+.modal .modal-header h2 {
+font-size: 20px;
+font-weight: 700;
+}
+.modal .modal-header .sub {
+color: #8a9bb0;
+font-size: 14px;
+font-weight: 400;
+margin-top: 2px;
+}
+.modal .close-btn {
+font-size: 24px;
+color: #6a7a8e;
+padding: 4px 6px;
+transition: color 0.2s;
+background: none;
+border: none;
+}
+.modal .close-btn:hover {
+color: #fff;
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+}
+to {
+opacity: 1;
+}
+}
+@keyframes slideUp {
+from {
+opacity: 0;
+transform: translateY(30px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+/* ─── TOAST ─── */
+.toast {
+position: fixed;
+bottom: 90px;
+left: 50%;
+transform: translateX(-50%);
+background: #1a1f2a;
+border: 1px solid #2d3545;
+padding: 12px 22px;
+border-radius: 12px;
+color: #eef2f6;
+font-size: 14px;
+font-weight: 500;
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.3s ease, transform 0.3s ease;
+z-index: 60;
+max-width: 90%;
+text-align: center;
+}
+.toast.show {
+opacity: 1;
+pointer-events: auto;
+transform: translateX(-50%) translateY(0);
+}
+
+/* ─── OFFLINE BADGE ─── */
+.offline-badge {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+background: #cc3b3b;
+color: #fff;
+text-align: center;
+padding: 6px 12px;
+font-size: 13px;
+font-weight: 600;
+z-index: 70;
+}
+.offline-badge.show {
+display: block;
+}
+
+/* ─── SLAB OCR ─── */
+.ocr-status {
+padding: 8px 12px;
+border-radius: 8px;
+font-size: 13px;
+background: #1a1f2a;
+color: #b0c0d0;
+margin-top: 6px;
+}
+.ocr-status.loading {
+color: #f9c74f;
+}
+.ocr-status.success {
+color: #4caf50;
+}
+.ocr-status.error {
+color: #ff6b6b;
+}
+.ocr-status.hidden {
+display: none;
+}
+
+.slab-image-preview {
+margin: 8px 0;
+border-radius: 10px;
+overflow: hidden;
+max-height: 180px;
+background: #0b0e14;
+border: 1px solid #1f2633;
+}
+.slab-image-preview img {
+width: 100%;
+height: auto;
+max-height: 180px;
+object-fit: contain;
+display: block;
+}
+.slab-image-preview .empty {
+padding: 20px;
+text-align: center;
+color: #6a7a8e;
+font-size: 13px;
+}
+
+/* ─── PROFILE PIC ─── */
+.profile-pic-wrap {
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-bottom: 16px;
+}
+.profile-pic-wrap .pic-preview {
+width: 100px;
+height: 100px;
+border-radius: 50%;
+overflow: hidden;
+background: #1a1f2a;
+border: 2px solid #2d3545;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 40px;
+color: #6a7a8e;
+margin-bottom: 8px;
+}
+.profile-pic-wrap .pic-preview img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+.profile-pic-wrap .pic-actions {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+justify-content: center;
+}
+.profile-pic-wrap .pic-actions button {
+padding: 6px 14px;
+border-radius: 8px;
+font-size: 12px;
+font-weight: 500;
+background: #1a1f2a;
+border: 1px solid #2d3545;
+color: #b0c0d0;
+transition: all 0.15s;
+}
+.profile-pic-wrap .pic-actions button:hover {
+background: #2a3346;
+border-color: #4f8cff;
+}
+
+/* ─── HELPERS ─── */
+.text-muted {
+color: #6a7a8e;
+}
+.text-red-600 {
+color: #ff6b6b;
+}
+.text-green-600 {
+color: #4caf50;
+}
+.text-xs {
+font-size: 12px;
+}
+.text-sm {
+font-size: 13px;
+}
+.font-medium {
+font-weight: 500;
+}
+.font-bold {
+font-weight: 700;
+}
+.mt-1 {
+margin-top: 6px;
+}
+.mt-2 {
+margin-top: 12px;
+}
+.mb-1 {
+margin-bottom: 6px;
+}
+.mb-2 {
+margin-bottom: 12px;
+}
+.gap-1 {
+gap: 6px;
+}
+.gap-2 {
+gap: 12px;
+}
+.flex {
+display: flex;
+}
+.flex-center {
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.flex-between {
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+.flex-col {
+flex-direction: column;
+}
+.w-full {
+width: 100%;
+}
+.opacity-0 {
+opacity: 0;
+}
+.opacity-100 {
+opacity: 1;
+}
+.transition {
+transition: all 0.25s;
+}
+.hidden {
+display: none !important;
+}
+
+/* ─── SLAB TABLE INLINE INPUTS ─── */
+.slab-actions {
+display: flex;
+gap: 4px;
+justify-content: center;
+}
+.slab-actions button {
+padding: 4px 8px;
+border-radius: 6px;
+font-size: 13px;
+background: transparent;
+color: #6a7a8e;
+transition: all 0.15s;
+border: none;
+}
+.slab-actions button:hover {
+color: #ff6b6b;
+background: #2a1a1a;
+}
+
+.slab-table input[type="number"] {
+width: 70px;
+padding: 6px 8px;
+font-size: 13px;
+border-radius: 6px;
+background: #0b0e14;
+border: 1px solid #1f2633;
+color: #eef2f6;
+}
+.slab-table input[type="number"]:focus {
+border-color: #4f8cff;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 400px) {
+.stats-grid {
+grid-template-columns: 1fr 1fr;
+gap: 6px;
+}
+.stats-grid .stat .value {
+font-size: 17px;
+}
+.tabs button {
+font-size: 11px;
+padding: 8px 0;
+}
+.tabs button .tab-icon {
+font-size: 16px;
+}
+.modal {
+padding: 16px;
+}
+.forgot-step .choice-grid {
+flex-direction: column;
+}
+}
+
+/* ─── CYCLE DISPLAY ─── */
+.cycle-display {
+background: #0b0e14;
+border-radius: 10px;
+padding: 12px 14px;
+border: 1px solid #1f2633;
+}
+.cycle-display .label {
+font-size: 12px;
+color: #6a7a8e;
+}
+.cycle-display .value {
+font-size: 18px;
+font-weight: 700;
+}
+.cycle-display .sub {
+font-size: 13px;
+color: #8a9bb0;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+width: 4px;
+height: 4px;
+}
+::-webkit-scrollbar-track {
+background: #0b0e14;
+}
+::-webkit-scrollbar-thumb {
+background: #2d3545;
+border-radius: 4px;
+}
+
+/* recaptcha container */
+#recaptcha-container {
+position: fixed;
+bottom: 20px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 100;
+display: flex;
+justify-content: center;
+}
+</style>
+</head>
+<body>
+
+<!-- ─── OFFLINE BADGE ─── -->
+<div id="offlineBadge" class="offline-badge">📡 You are offline — data is saved locally.</div>
+
+<!-- ─── TOAST ─── -->
+<div id="toast" class="toast"></div>
+
+<!-- ──────────────────────────────────────────────────────────────
+SCREEN: LOGIN
+────────────────────────────────────────────────────────────── -->
+<div id="login-screen" class="screen active">
+<div class="login-header">
+<div class="logo"><img src="icon-512.png" alt="CabCalc Logo" style="width: 70px; height: 70px; border-radius: 12px; object-fit: cover;" /></div>
+<h1>CabCalc</h1>
+<p>Driver Earnings Tracker</p>
+</div>
+
+<!-- Login Tabs -->
+<div class="login-tabs" id="loginTabs">
+<button class="active" data-tab="login">Log In</button>
+<button data-tab="signup">Sign Up</button>
+</div>
+
+<!-- SIGNUP FORM -->
+<div id="signupForm" class="login-form" style="display:none;">
+<div class="form-group">
+<label>First Name</label>
+<input type="text" id="signupFirstName" placeholder="Ahmed" />
+</div>
+<div class="form-group">
+<label>Last Name</label>
+<input type="text" id="signupLastName" placeholder="Al Maktoum" />
+</div>
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="signupEmail" placeholder="you@example.com" />
+</div>
+<div class="form-group">
+<label>Phone Number</label>
+<div class="input-with-prefix">
+<span class="prefix">+971</span>
+<input type="tel" id="signupPhone" placeholder="50 123 4567" maxlength="9" />
+</div>
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="signupPassword" placeholder="Min 6 characters" />
+</div>
+<button class="btn-primary" id="signupSubmitBtn">Create Account</button>
+
+<!-- OTP Section -->
+<div id="otpSection" class="otp-section">
+<p style="font-size:14px;color:#b0c0d0;text-align:center;">
+📱 We sent a code to <strong id="otpPhoneDisplay">+971 50 ****567</strong>
+</p>
+<div class="otp-digits">
+<input type="text" maxlength="1" class="otp-digit" />
+<input type="text" maxlength="1" class="otp-digit" />
+<input type="text" maxlength="1" class="otp-digit" />
+<input type="text" maxlength="1" class="otp-digit" />
+<input type="text" maxlength="1" class="otp-digit" />
+<input type="text" maxlength="1" class="otp-digit" />
+</div>
+<div class="otp-actions">
+<button class="btn-primary" id="otpVerifyBtn" style="width:auto;padding:10px 28px;">Verify</button>
+<span class="timer" id="otpTimer">2:00</span>
+<button class="resend" id="otpResendBtn" disabled>Resend</button>
+</div>
+</div>
+</div>
+
+<!-- LOGIN FORM -->
+<div id="loginForm" class="login-form">
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="loginEmail" placeholder="you@example.com" />
+</div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="loginPassword" placeholder="••••••••" />
+<div class="forgot-pw-link" id="forgotPwLink">Forgot password?</div>
+</div>
+<button class="btn-primary" id="loginSubmitBtn">Log In</button>
+
+<!-- Terms link -->
+<p style="text-align:center;margin-top:12px;font-size:13px;color:#6a7a8e;">
+By continuing you agree to our
+<a href="#" id="loginTermsLink">Terms & Privacy</a>.
+</p>
+
+<!-- Social Login -->
+<div class="social-login">
+<div class="divider">or continue with</div>
+<div class="social-btns">
+<button class="google" id="socialGoogle" title="Google">G</button>
+<button class="facebook" id="socialFacebook" title="Facebook">f</button>
+<button class="x" id="socialX" title="X">𝕏</button>
+</div>
+</div>
+</div>
+
+<!-- ─── FORGOT PASSWORD FLOW (4 steps) ─── -->
+<div id="forgotPwContainer" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid #2d3545;">
+<!-- Step 1: Selection -->
+<div class="forgot-step active" data-step="1">
+<div class="back-link" id="fpBackToLogin">← Back to Login</div>
+<div class="step-title">Recover Account</div>
+<div class="step-sub">Choose how you'd like to reset your password.</div>
+<div class="choice-grid">
+<button id="fpChooseEmail">
+<span class="icon">✉️</span>
+Email
+</button>
+<button id="fpChoosePhone">
+<span class="icon">📱</span>
+Phone
+</button>
+</div>
+</div>
+
+<!-- Step 2: Input -->
+<div class="forgot-step" data-step="2">
+<div class="back-link" id="fpBackToStep1">← Back</div>
+<div class="step-title" id="fpStep2Title">Enter your Email</div>
+<div class="step-sub" id="fpStep2Sub">We'll send a verification code.</div>
+<div class="form-group">
+<label id="fpStep2Label">Email</label>
+<div class="input-with-prefix" id="fpPhonePrefixWrap" style="display:none;">
+<span class="prefix">+971</span>
+<input type="tel" id="fpStep2Input" placeholder="50 123 4567" maxlength="9" />
+</div>
+<input type="email" id="fpStep2InputEmail" placeholder="you@example.com" style="display:none;" />
+</div>
+<button class="btn-primary" id="fpSendOtpBtn">Send OTP</button>
+</div>
+
+<!-- Step 3: OTP -->
+<div class="forgot-step" data-step="3">
+<div class="back-link" id="fpBackToStep2">← Back</div>
+<div class="step-title">Verify Code</div>
+<div class="step-sub">Enter the 6-digit code sent to <strong id="fpOtpDestination">your email</strong>.</div>
+<div class="otp-digits">
+<input type="text" maxlength="1" class="fp-otp-digit" />
+<input type="text" maxlength="1" class="fp-otp-digit" />
+<input type="text" maxlength="1" class="fp-otp-digit" />
+<input type="text" maxlength="1" class="fp-otp-digit" />
+<input type="text" maxlength="1" class="fp-otp-digit" />
+<input type="text" maxlength="1" class="fp-otp-digit" />
+</div>
+<div class="otp-actions">
+<button class="btn-primary" id="fpVerifyOtpBtn" style="width:auto;padding:10px 28px;">Verify</button>
+<span class="timer" id="fpOtpTimer">2:00</span>
+<button class="resend" id="fpResendOtpBtn" disabled>Resend</button>
+</div>
+</div>
+
+<!-- Step 4: Reset Password -->
+<div class="forgot-step" data-step="4">
+<div class="back-link" id="fpBackToStep3">← Back</div>
+<div class="step-title">Reset Password</div>
+<div class="step-sub">Create a new password for your account.</div>
+<div class="form-group">
+<label>New Password</label>
+<input type="password" id="fpNewPassword" placeholder="Min 6 characters" />
+</div>
+<div class="form-group">
+<label>Confirm Password</label>
+<input type="password" id="fpConfirmPassword" placeholder="Re-enter new password" />
+</div>
+<button class="btn-primary" id="fpSavePasswordBtn">Save Password</button>
+</div>
+</div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────
+SCREEN: ONBOARDING RATES
+────────────────────────────────────────────────────────────── -->
+<div id="onboarding-rates" class="screen">
+<div class="login-header" style="padding-top:20px;">
+<div class="logo">⚙️</div>
+<h1 style="font-size:22px;">Rates & Cutting</h1>
+<p style="font-size:14px;">Set your per-trip deductions and fuel cost.</p>
+</div>
+<div class="onboard-progress">
+<span class="dot active"></span>
+<span class="dot"></span>
+</div>
+<div class="card">
+<div class="form-group">
+<label>Normal Trip Cut (AED)</label>
+<input type="number" id="onboardNormalCut" step="0.01" min="0" value="4.50" />
+</div>
+<div class="form-group">
+<label>Careem Trip Cut (AED)</label>
+<input type="number" id="onboardCareemCut" step="0.01" min="0" value="6.00" />
+</div>
+<div class="form-group">
+<label>Airport Trip Cut (AED)</label>
+<input type="number" id="onboardAirportCut" step="0.01" min="0" value="8.50" />
+</div>
+<div class="form-group">
+<label>Fuel Rate (AED / km)</label>
+<input type="number" id="onboardFuelRate" step="0.01" min="0" value="0.55" />
+</div>
+<div style="display:flex;gap:10px;margin-top:6px;">
+<button class="btn-secondary" id="onboardRatesBack" style="flex:1;">Back</button>
+<button class="btn-primary" id="onboardRatesNext" style="flex:2;">Next →</button>
+</div>
+</div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────
+SCREEN: ONBOARDING SLABS
+────────────────────────────────────────────────────────────── -->
+<div id="onboarding-slabs" class="screen">
+<div class="login-header" style="padding-top:20px;">
+<div class="logo">📊</div>
+<h1 style="font-size:22px;">Slab & Cycle</h1>
+<p style="font-size:14px;">Define commission slabs and billing cycle.</p>
+</div>
+<div class="onboard-progress">
+<span class="dot done"></span>
+<span class="dot active"></span>
+</div>
+<div class="card">
+<div class="flex-between" style="margin-bottom:8px;">
+<span class="font-bold">Commission Slabs</span>
+<button class="btn-outline" id="onboardAddSlabBtn" style="padding:4px 12px;font-size:12px;">+ Add</button>
+</div>
+<div class="table-wrap slab-table">
+<table>
+<thead><tr><th>Min (AED)</th><th>Max (AED)</th><th>%</th><th style="width:36px;"></th></tr></thead>
+<tbody id="onboardSlabBody"></tbody>
+</table>
+</div>
+<div style="display:flex;gap:10px;margin-top:12px;">
+<div class="form-group" style="flex:1;">
+<label style="font-size:12px;">Cycle Start Day</label>
+<input type="number" id="onboardCycleStart" min="1" max="31" value="1" />
+</div>
+<div class="form-group" style="flex:1;">
+<label style="font-size:12px;">Cycle End Day</label>
+<input type="number" id="onboardCycleEnd" min="1" max="31" value="15" />
+</div>
+</div>
+<div style="display:flex;gap:10px;margin-top:4px;">
+<button class="btn-secondary" id="onboardSlabsBack" style="flex:1;">Back</button>
+<button class="btn-primary" id="onboardSlabsFinish" style="flex:2;">Finish 🚀</button>
+</div>
+</div>
+</div>
+
+<!-- ──────────────────────────────────────────────────────────────
+SCREEN: MAIN APP
+────────────────────────────────────────────────────────────── -->
+<div id="main-app" class="screen" style="display:none;">
+
+<!-- App Header -->
+<header class="app-header" style="position:relative;">
+<div class="brand">🚕 Cab<span>Calc</span></div>
+<button class="avatar-btn" id="profileBtn">
+<span class="placeholder" id="avatarPlaceholder">👤</span>
+<img id="avatarImage" style="display:none;" alt="avatar" />
+</button>
+<!-- Dropdown -->
+<div class="dropdown" id="profileDropdown">
+<button class="dropdown-item" data-action="dashboard"><span class="icon">📊</span> Dashboard</button>
+<button class="dropdown-item" data-action="target"><span class="icon">🎯</span> Slab & Cycle</button>
+<button class="dropdown-item" data-action="cutting"><span class="icon">✂️</span> Rates</button>
+<button class="dropdown-item" data-action="settings"><span class="icon">👤</span> Profile</button>
+<div class="divider"></div>
+<button class="dropdown-item" data-action="invite"><span class="icon">📤</span> Invite Friend</button>
+<button class="dropdown-item" data-action="export-backup"><span class="icon">💾</span> Export Backup</button>
+<button class="dropdown-item" data-action="import-backup"><span class="icon">📂</span> Import Backup</button>
+<button class="dropdown-item" data-action="terms"><span class="icon">📄</span> Terms</button>
+<button class="dropdown-item" data-action="feedback"><span class="icon">💬</span> Feedback</button>
+<div class="divider"></div>
+<button class="dropdown-item" data-action="logout" style="color:#ff6b6b;"><span class="icon">🚪</span> Logout</button>
+</div>
+</header>
+
+<!-- Tabs -->
+<div class="tabs">
+<button class="active" data-tab="dashboard"><span class="tab-icon">📊</span> Dashboard</button>
+<button data-tab="rates"><span class="tab-icon">✂️</span> Rates</button>
+<button data-tab="slab"><span class="tab-icon">🎯</span> Slab</button>
+<button data-tab="profile"><span class="tab-icon">👤</span> Profile</button>
+</div>
+
+<!-- ─── TAB: DASHBOARD ─── -->
+<div id="tab-dashboard" class="tab-content active">
+<!-- Stats -->
+<div class="stats-grid">
+<div class="stat">
+<div class="label">Shifts</div>
+<div class="value" id="shiftCount">0 shifts</div>
+</div>
+<div class="stat">
+<div class="label">Total Revenue</div>
+<div class="value" id="sumTotalRevenue">0.00 AED</div>
+</div>
+<div class="stat">
+<div class="label">Net Earnings</div>
+<div class="value" id="sumNet">0.00 AED</div>
+</div>
+<div class="stat">
+<div class="label">Commission</div>
+<div class="value" id="dashboardCommissionPct">— <span class="sub">no slab</span></div>
+</div>
+</div>
+
+<!-- Shift List -->
+<div class="card">
+<div class="card-title">
+<span>Shift Log</span>
+<span class="badge" id="shiftCountBadge">0</span>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Revenue</th>
+<th>Trips</th>
+<th>Airport</th>
+<th>Careem</th>
+<th>Cut</th>
+<th>Fuel</th>
+<th>Salik</th>
+<th>Net</th>
+<th style="width:60px;"></th>
+</tr>
+</thead>
+<tbody id="shiftTableBody"></tbody>
+</table>
+<div id="emptyShifts" class="empty-state" style="display:none;">No shifts logged yet.<br />Tap the + button to add one.</div>
+</div>
+</div>
+</div>
+
+<!-- ─── TAB: RATES ─── -->
+<div id="tab-rates" class="tab-content">
+<div class="card">
+<div class="card-title">Cutting Rates</div>
+<div class="form-group">
+<label>Normal Trip Cut (AED)</label>
+<input type="number" id="settingNormalCut" step="0.01" min="0" />
+</div>
+<div class="form-group">
+<label>Careem Trip Cut (AED)</label>
+<input type="number" id="settingCareemCut" step="0.01" min="0" />
+</div>
+<div class="form-group">
+<label>Airport Trip Cut (AED)</label>
+<input type="number" id="settingAirportCut" step="0.01" min="0" />
+</div>
+<div class="form-group">
+<label>Fuel Rate (AED / km)</label>
+<input type="number" id="settingFuelRate" step="0.01" min="0" />
+</div>
+<button class="btn-primary" id="saveSettingsBtn">💾 Save Rates</button>
+<div id="settingsSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Rates saved!</div>
+</div>
+</div>
+
+<!-- ─── TAB: SLAB ─── -->
+<div id="tab-slab" class="tab-content">
+<!-- Cycle Display -->
+<div class="cycle-display" style="margin-bottom:14px;">
+<div class="flex-between">
+<span class="label">Current Cycle</span>
+<span class="sub" id="cycleRangeDisplay">—</span>
+</div>
+<div class="flex-between" style="margin-top:4px;">
+<span class="value" id="monthlyRevenue">0.00 AED</span>
+<span class="sub">Revenue</span>
+</div>
+<div class="flex-between" style="margin-top:4px;">
+<span class="value" id="slabCommissionPct">—</span>
+<span class="sub">Commission</span>
+</div>
+<div class="flex-between" style="margin-top:4px;">
+<span class="value" id="slabNetIncome">—</span>
+<span class="sub">Est. Net</span>
+</div>
+<div class="flex-between" style="margin-top:2px;font-size:13px;color:#6a7a8e;">
+<span>Matched Slab: <strong id="matchedSlabDesc">—</strong></span>
+</div>
+</div>
+
+<!-- Slab Table -->
+<div class="card">
+<div class="card-title">
+<span>Commission Slabs</span>
+<button class="btn-outline" id="addSlabRowBtn" style="padding:2px 12px;font-size:12px;">+ Add</button>
+</div>
+<div class="table-wrap slab-table">
+<table>
+<thead><tr><th>Min (AED)</th><th>Max (AED)</th><th>%</th><th style="width:36px;"></th></tr></thead>
+<tbody id="slabTableBody"></tbody>
+</table>
+</div>
+<button class="btn-primary" id="saveSlabsBtn" style="margin-top:10px;">💾 Save Slabs</button>
+<div id="slabSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Slabs saved!</div>
+</div>
+
+<!-- Cycle Settings -->
+<div class="card">
+<div class="card-title">Billing Cycle</div>
+<div style="display:flex;gap:12px;">
+<div class="form-group" style="flex:1;">
+<label style="font-size:12px;">Start Day</label>
+<input type="number" id="cycleStartDay" min="1" max="31" />
+</div>
+<div class="form-group" style="flex:1;">
+<label style="font-size:12px;">End Day</label>
+<input type="number" id="cycleEndDay" min="1" max="31" />
+</div>
+</div>
+<button class="btn-primary" id="saveCycleBtn">📅 Save Cycle</button>
+<div id="cycleStatus" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Cycle saved!</div>
+</div>
+
+<!-- OCR Section -->
+<div class="card">
+<div class="card-title">📸 Auto‑Fill Slabs</div>
+<p class="text-sm text-muted" style="margin-bottom:8px;">Upload or capture a slab table image to extract values.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;">
+<button class="btn-outline" id="slabImageInput" style="flex:1;padding:8px;">📁 Upload</button>
+<button class="btn-outline" id="slabCameraBtn" style="flex:1;padding:8px;">📷 Camera</button>
+<button class="btn-primary" id="slabOcrBtn" style="flex:1.5;padding:8px;" disabled>🤖 Auto‑Fill</button>
+</div>
+<input type="file" id="slabImageInputFile" accept="image/*" style="display:none;" />
+<div class="slab-image-preview" id="slabImagePreview"><div class="empty">No image loaded</div></div>
+<div id="ocrStatus" class="ocr-status hidden"></div>
+</div>
+</div>
+
+<!-- ─── TAB: PROFILE ─── -->
+<div id="tab-profile" class="tab-content">
+<div class="card">
+<div class="profile-pic-wrap">
+<div class="pic-preview" id="profilePicPreview">
+<img id="profilePicImg" style="display:none;" alt="profile" />
+<span id="profilePicPlaceholder" style="font-size:40px;">👤</span>
+</div>
+<div class="pic-actions">
+<button id="profilePicUploadBtn">📁 Upload</button>
+<button id="profilePicCameraBtn">📷 Camera</button>
+<button id="profilePicClearBtn" style="color:#ff6b6b;">✕ Clear</button>
+</div>
+<input type="file" id="profilePicInput" accept="image/*" style="display:none;" />
+</div>
+<div class="form-group">
+<label>Full Name</label>
+<input type="text" id="profileName" placeholder="Ahmed Al Maktoum" />
+</div>
+<div class="form-group">
+<label>Phone Number</label>
+<div class="input-with-prefix">
+<span class="prefix">+971</span>
+<input type="tel" id="profilePhone" placeholder="50 123 4567" maxlength="9" />
+</div>
+</div>
+<div class="form-group">
+<label>Email</label>
+<input type="email" id="profileEmail" placeholder="you@example.com" />
+</div>
+<button class="btn-primary" id="saveProfileBtn">💾 Save Profile</button>
+<div id="profileSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Profile saved!</div>
+</div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fabOpen" aria-label="Add shift">+</button>
+</div>
+
+<!-- ─── SHIFT MODAL ─── -->
+<div class="modal-overlay" id="shiftModal">
+<div class="modal">
+<div class="modal-header">
+<div>
+<h2 id="shiftModalTitle">New Shift Entry</h2>
+<div class="sub" id="shiftModalSub">Enter today's shift details — calculations are automatic.</div>
+</div>
+<button class="close-btn" id="modalClose">✕</button>
+</div>
+<form id="shiftForm">
+<input type="hidden" id="shiftEditIndex" value="-1" />
+<div class="form-group">
+<label>Date</label>
+<input type="date" id="shiftDate" />
+</div>
+<div class="form-group">
+<label>Revenue (AED)</label>
+<input type="number" id="shiftRevenue" step="0.01" min="0" placeholder="0.00" />
+</div>
+<div class="form-group">
+<label>Total Trips</label>
+<input type="number" id="shiftTotalTrips" step="1" min="0" placeholder="0" />
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+<div class="form-group">
+<label>Airport Trips</label>
+<input type="number" id="shiftAirport" step="1" min="0" value="0" />
+</div>
+<div class="form-group">
+<label>Careem Trips</label>
+<input type="number" id="shiftCareem" step="1" min="0" value="0" />
+</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+<div class="form-group">
+<label>Kilometers</label>
+<input type="number" id="shiftKm" step="0.1" min="0" placeholder="0" />
+</div>
+<div class="form-group">
+<label>Salik (AED)</label>
+<input type="number" id="shiftSalik" step="0.01" min="0" placeholder="0.00" />
+</div>
+</div>
+
+<!-- Preview -->
+<div style="background:#0b0e14;border-radius:10px;padding:12px;margin:10px 0;border:1px solid #1f2633;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:14px;">
+<span class="text-muted">Normal Trips</span><span id="previewNormal" class="font-bold">0</span>
+<span class="text-muted">Company Cut</span><span id="previewCompanyCut" class="font-bold">0.00 AED</span>
+<span class="text-muted">Fuel Cost</span><span id="previewFuel" class="font-bold">0.00 AED</span>
+<span class="text-muted">Salik</span><span id="previewSalik" class="font-bold">0.00 AED</span>
+<span class="text-muted" style="font-weight:600;">Net Earnings</span><span id="previewNet" class="font-bold" style="color:#4caf50;">0.00 AED</span>
+</div>
+</div>
+
+<button class="btn-primary" id="shiftSubmitBtn">✅ Save Shift</button>
+</form>
+</div>
+</div>
+
+<!-- ─── TERMS MODAL ─── -->
+<div class="modal-overlay" id="termsModal">
+<div class="modal">
+<div class="modal-header">
+<h2>Terms & Privacy</h2>
+<button class="close-btn" id="termsModalClose">✕</button>
+</div>
+<div style="font-size:14px;color:#b0c0d0;line-height:1.6;max-height:50vh;overflow-y:auto;padding-right:4px;">
+<p><strong>CabCalc</strong> is a driver earnings tracking tool. All data is stored locally on your device by default.</p>
+<p style="margin-top:8px;">We do not collect, store, or share your personal data unless you explicitly enable cloud sync (coming soon).</p>
+<p style="margin-top:8px;">By using this app, you agree to use it at your own risk. We are not responsible for any financial decisions made based on the calculations provided.</p>
+<p style="margin-top:8px;">For support, please use the Feedback option in the menu.</p>
+</div>
+<button class="btn-primary" id="termsAcceptBtn" style="margin-top:12px;">I Understand</button>
+</div>
+</div>
+
+<!-- ─── FEEDBACK MODAL ─── -->
+<div class="modal-overlay" id="feedbackModal">
+<div class="modal">
+<div class="modal-header">
+<h2>💬 Feedback</h2>
+<button class="close-btn" id="feedbackModalClose">✕</button>
+</div>
+<form id="feedbackForm">
+<div class="form-group">
+<label>Your Message</label>
+<textarea id="feedbackMessage" rows="4" placeholder="Tell us what you think..." style="width:100%;padding:10px;border-radius:10px;background:#0b0e14;border:1px solid #2d3545;color:#eef2f6;resize:vertical;font:inherit;"></textarea>
+</div>
+<div class="form-group">
+<label>Email (optional)</label>
+<input type="email" id="feedbackEmail" placeholder="you@example.com" />
+</div>
+<button class="btn-primary" type="submit">Send Feedback</button>
+</form>
+</div>
+</div>
+
+<!-- ─── IMPORT BACKUP (hidden input) ─── -->
+<input type="file" id="importBackupInput" accept=".json" style="display:none;" />
+
+<!-- ─── RECAPTCHA CONTAINER ─── -->
+<div id="recaptcha-container"></div>
+
+<!-- ──────────────────────────────────────────────────────────────
+JAVASCRIPT — Firebase v10 Modular SDK via CDN
+────────────────────────────────────────────────────────────── -->
+<script type="importmap">
+{
+"imports": {
+"firebase-app": "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js",
+"firebase-auth": "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js",
+"firebase-firestore": "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"
+}
+}
+</script>
+
+<script type="module">
+// ──────────────────────────────────────────────────────────────
+// IMPORTS
+// ──────────────────────────────────────────────────────────────
+import { initializeApp } from 'firebase-app';
+import {
+getAuth,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+signOut,
+sendPasswordResetEmail,
+onAuthStateChanged,
+RecaptchaVerifier,
+signInWithPhoneNumber,
+updatePhoneNumber,
+PhoneAuthProvider,
+linkWithCredential,
+EmailAuthProvider,
+fetchSignInMethodsForEmail
+} from 'firebase-auth';
+import {
+getFirestore,
+doc,
+setDoc,
+getDoc,
+updateDoc,
+deleteDoc,
+serverTimestamp
+} from 'firebase-firestore';
+
+// ──────────────────────────────────────────────────────────────
+// FIREBASE CONFIG
+// ──────────────────────────────────────────────────────────────
+const firebaseConfig = {
+apiKey: "AIzaSyCOQi_nbyVTCzGiTnw9qN5aR4m7QMeC9N8",
+authDomain: "cabcalc-6a319.firebaseapp.com",
+projectId: "cabcalc-6a319",
+storageBucket: "cabcalc-6a319.firebasestorage.app",
+messagingSenderId: "106060084837",
+appId: "1:106060084837:web:98b13dec33f128d7dbb88c"
+};
+
+// ──────────────────────────────────────────────────────────────
+// INIT FIREBASE
+// ──────────────────────────────────────────────────────────────
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ──────────────────────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────────────────────
+let currentUser = null;
+let appData = null;
+let editingShiftIndex = -1;
+let currentSlabs = [];
+let currentSettings = {};
+let currentProfile = {};
+let currentCycleStart = 1;
+let currentCycleEnd = 15;
+let fpMethod = 'email';
+let fpVerificationId = null;
+let fpOtpTimerInterval = null;
+let signupVerificationId = null;
+let signupRecaptchaVerifier = null;
+let forgotRecaptchaVerifier = null;
+
+// ──────────────────────────────────────────────────────────────
+// DOM REFS (same as before, but we'll re-assign in the module)
+// ──────────────────────────────────────────────────────────────
+function getEl(id) { return document.getElementById(id); }
+
+const $`` = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+
+const screens = {
+login: getEl('login-screen'),
+onboardingRates: getEl('onboarding-rates'),
+onboardingSlabs: getEl('onboarding-slabs'),
+mainApp: getEl('main-app'),
+};
+
+const tabs = {
+dashboard: getEl('tab-dashboard'),
+rates: getEl('tab-rates'),
+slab: getEl('tab-slab'),
+profile: getEl('tab-profile'),
+};
+
+const loginTabs = ``$('button', getEl('loginTabs'));
+const signupForm = getEl('signupForm');
+const loginForm = getEl('loginForm');
+const otpSection = getEl('otpSection');
+
+const shiftModal = getEl('shiftModal');
+const shiftForm = getEl('shiftForm');
+const shiftEditIndex = getEl('shiftEditIndex');
+const shiftDate = getEl('shiftDate');
+const shiftRevenue = getEl('shiftRevenue');
+const shiftTotalTrips = getEl('shiftTotalTrips');
+const shiftAirport = getEl('shiftAirport');
+const shiftCareem = getEl('shiftCareem');
+const shiftKm = getEl('shiftKm');
+const shiftSalik = getEl('shiftSalik');
+const shiftSubmitBtn = getEl('shiftSubmitBtn');
+const shiftModalTitle = getEl('shiftModalTitle');
+const shiftModalSub = getEl('shiftModalSub');
+
+const previewNormal = getEl('previewNormal');
+const previewCompanyCut = getEl('previewCompanyCut');
+const previewFuel = getEl('previewFuel');
+const previewSalik = getEl('previewSalik');
+const previewNet = getEl('previewNet');
+
+const shiftTableBody = getEl('shiftTableBody');
+const emptyShifts = getEl('emptyShifts');
+const sumTotalRevenue = getEl('sumTotalRevenue');
+const sumNet = getEl('sumNet');
+const dashboardCommissionPct = getEl('dashboardCommissionPct');
+const shiftCount = getEl('shiftCount');
+const fabOpen = getEl('fabOpen');
+
+const settingAirportCut = getEl('settingAirportCut');
+const settingCareemCut = getEl('settingCareemCut');
+const settingNormalCut = getEl('settingNormalCut');
+const settingFuelRate = getEl('settingFuelRate');
+const saveSettingsBtn = getEl('saveSettingsBtn');
+const settingsSavedMsg = getEl('settingsSavedMsg');
+
+const slabTableBody = getEl('slabTableBody');
+const addSlabRowBtn = getEl('addSlabRowBtn');
+const saveSlabsBtn = getEl('saveSlabsBtn');
+const slabSavedMsg = getEl('slabSavedMsg');
+const cycleStartDay = getEl('cycleStartDay');
+const cycleEndDay = getEl('cycleEndDay');
+const saveCycleBtn = getEl('saveCycleBtn');
+const cycleStatus = getEl('cycleStatus');
+const cycleRangeDisplay = getEl('cycleRangeDisplay');
+const monthlyRevenue = getEl('monthlyRevenue');
+const matchedSlabDesc = getEl('matchedSlabDesc');
+const slabCommissionPct = getEl('slabCommissionPct');
+const slabNetIncome = getEl('slabNetIncome');
+const slabImageInput = getEl('slabImageInput');
+const slabImageInputFile = getEl('slabImageInputFile');
+const slabCameraBtn = getEl('slabCameraBtn');
+const slabOcrBtn = getEl('slabOcrBtn');
+const slabImagePreview = getEl('slabImagePreview');
+const ocrStatus = getEl('ocrStatus');
+
+const profileName = getEl('profileName');
+const profilePhone = getEl('profilePhone');
+const profileEmail = getEl('profileEmail');
+const profilePicPreview = getEl('profilePicPreview');
+const profilePicImg = getEl('profilePicImg');
+const profilePicPlaceholder = getEl('profilePicPlaceholder');
+const profilePicUploadBtn = getEl('profilePicUploadBtn');
+const profilePicCameraBtn = getEl('profilePicCameraBtn');
+const profilePicClearBtn = getEl('profilePicClearBtn');
+const profilePicInput = getEl('profilePicInput');
+const saveProfileBtn = getEl('saveProfileBtn');
+const profileSavedMsg = getEl('profileSavedMsg');
+
+const profileBtn = getEl('profileBtn');
+const profileDropdown = getEl('profileDropdown');
+const avatarPlaceholder = getEl('avatarPlaceholder');
+const avatarImage = getEl('avatarImage');
+
+const termsModal = getEl('termsModal');
+const termsModalClose = getEl('termsModalClose');
+const termsAcceptBtn = getEl('termsAcceptBtn');
+const feedbackModal = getEl('feedbackModal');
+const feedbackModalClose = getEl('feedbackModalClose');
+const feedbackForm = getEl('feedbackForm');
+const feedbackMessage = getEl('feedbackMessage');
+const feedbackEmail = getEl('feedbackEmail');
+const loginTermsLink = getEl('loginTermsLink');
+
+const onboardNormalCut = getEl('onboardNormalCut');
+const onboardCareemCut = getEl('onboardCareemCut');
+const onboardAirportCut = getEl('onboardAirportCut');
+const onboardFuelRate = getEl('onboardFuelRate');
+const onboardRatesNext = getEl('onboardRatesNext');
+const onboardRatesBack = getEl('onboardRatesBack');
+const onboardCycleStart = getEl('onboardCycleStart');
+const onboardCycleEnd = getEl('onboardCycleEnd');
+const onboardSlabBody = getEl('onboardSlabBody');
+const onboardAddSlabBtn = getEl('onboardAddSlabBtn');
+const onboardSlabsBack = getEl('onboardSlabsBack');
+const onboardSlabsFinish = getEl('onboardSlabsFinish');
+
+const toast = getEl('toast');
+const offlineBadge = getEl('offlineBadge');
+const importBackupInput = getEl('importBackupInput');
+
+const otpDigits = $('.otp-digit');
+const otpVerifyBtn = getEl('otpVerifyBtn');
+const otpResendBtn = getEl('otpResendBtn');
+const otpTimer = getEl('otpTimer');
+const otpPhoneDisplay = getEl('otpPhoneDisplay');
+
+const forgotPwContainer = getEl('forgotPwContainer');
+const fpBackToLogin = getEl('fpBackToLogin');
+const fpChooseEmail = getEl('fpChooseEmail');
+const fpChoosePhone = getEl('fpChoosePhone');
+const fpBackToStep1 = getEl('fpBackToStep1');
+const fpStep2Title = getEl('fpStep2Title');
+const fpStep2Sub = getEl('fpStep2Sub');
+const fpStep2Label = getEl('fpStep2Label');
+const fpPhonePrefixWrap = getEl('fpPhonePrefixWrap');
+const fpStep2Input = getEl('fpStep2Input');
+const fpStep2InputEmail = getEl('fpStep2InputEmail');
+const fpSendOtpBtn = getEl('fpSendOtpBtn');
+const fpBackToStep2 = getEl('fpBackToStep2');
+const fpOtpDestination = getEl('fpOtpDestination');
+const fpOtpDigits = ``$('.fp-otp-digit');
+const fpVerifyOtpBtn = getEl('fpVerifyOtpBtn');
+const fpOtpTimer = getEl('fpOtpTimer');
+const fpResendOtpBtn = getEl('fpResendOtpBtn');
+const fpBackToStep3 = getEl('fpBackToStep3');
+const fpNewPassword = getEl('fpNewPassword');
+const fpConfirmPassword = getEl('fpConfirmPassword');
+const fpSavePasswordBtn = getEl('fpSavePasswordBtn');
+const forgotPwLink = getEl('forgotPwLink');
+
+const loginSubmitBtn = getEl('loginSubmitBtn');
+const signupSubmitBtn = getEl('signupSubmitBtn');
+
+const socialGoogle = getEl('socialGoogle');
+const socialFacebook = getEl('socialFacebook');
+const socialX = getEl('socialX');
+
+const recaptchaContainer = getEl('recaptcha-container');
+
+// ──────────────────────────────────────────────────────────────
+// TOAST
+// ──────────────────────────────────────────────────────────────
+let toastTimer = null;
+
+function showToast(msg, duration) {
+duration = duration || 2500;
+toast.textContent = msg;
+toast.classList.add('show');
+clearTimeout(toastTimer);
+toastTimer = setTimeout(() => {
+toast.classList.remove('show');
+}, duration);
+}
+window.showToast = showToast;
+
+// ──────────────────────────────────────────────────────────────
+// DATA LAYER (localStorage + Firestore)
+// ──────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'cabCalcData';
+
+function getDefaultSettings() {
+return {
+airportCut: 8.50,
+careemCut: 6.00,
+normalCut: 4.50,
+fuelRate: 0.55,
+cycleStartDay: 1,
+cycleEndDay: 15,
+};
+}
+
+function getDefaultSlabs() {
+return [
+{ min: 0, max: 5000, pct: 25 },
+{ min: 5001, max: 10000, pct: 22 },
+{ min: 10001, max: 20000, pct: 18 },
+{ min: 20001, max: 35000, pct: 15 },
+{ min: 35001, max: 999999, pct: 12 },
+ ];
+}
+
+function loadLocalData() {
+try {
+const raw = localStorage.getItem(STORAGE_KEY);
+if (raw) {
+const data = JSON.parse(raw);
+if (!data.shifts) data.shifts = [];
+if (!data.settings) data.settings = getDefaultSettings();
+if (!data.slabs || !data.slabs.length) data.slabs = getDefaultSlabs();
+if (!data.profile) data.profile = { name: '', phone: '', email: '', picture: null };
+if (data.settings.cycleStartDay === undefined) data.settings.cycleStartDay = 1;
+if (data.settings.cycleEndDay === undefined) data.settings.cycleEndDay = 15;
+return data;
+}
+} catch (_) { /* ignore */ }
+return { shifts: [], settings: getDefaultSettings(), slabs: getDefaultSlabs(), slabImage: null,
+profile: { name: '', phone: '', email: '', picture: null } };
+}
+
+function saveLocalData(data) {
+localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+appData = data;
+}
+
+// ─── Firestore data operations ───
+
+async function firebaseSaveData(data) {
+if (!currentUser) {
+// Fallback to local
+saveLocalData(data);
+return data;
+}
+try {
+const docRef = doc(db, 'users', currentUser.uid);
+await setDoc(docRef, {
+shifts: data.shifts || [],
+settings: data.settings || getDefaultSettings(),
+slabs: data.slabs || getDefaultSlabs(),
+profile: data.profile || { name: '', phone: '', email: '', picture: null },
+updatedAt: serverTimestamp()
+}, { merge: true });
+saveLocalData(data);
+return data;
+} catch (err) {
+console.error('firebaseSaveData error:', err);
+// Fallback to local
+saveLocalData(data);
+showToast('⚠️ Cloud save failed, saved locally');
+return data;
+}
+}
+
+async function firebaseLoadData(uid) {
+if (!uid) return loadLocalData();
+try {
+const docRef = doc(db, 'users', uid);
+const snap = await getDoc(docRef);
+if (snap.exists()) {
+const data = snap.data();
+const merged = {
+shifts: data.shifts || [],
+settings: data.settings || getDefaultSettings(),
+slabs: data.slabs || getDefaultSlabs(),
+profile: data.profile || { name: '', phone: '', email: '', picture: null },
+};
+if (merged.settings.cycleStartDay === undefined) merged.settings.cycleStartDay = 1;
+if (merged.settings.cycleEndDay === undefined) merged.settings.cycleEndDay = 15;
+saveLocalData(merged);
+return merged;
+} else {
+// No doc yet — return default
+const def = loadLocalData();
+return def;
+}
+} catch (err) {
+console.error('firebaseLoadData error:', err);
+return loadLocalData();
+}
+}
+
+async function firebaseSignUp(email, password, profile) {
+// After phone OTP verification, the user may already be signed in with phone.
+// If so, we link email/password to the phone user.
+// Otherwise, we create a new email/password user.
+try {
+let userCred;
+if (auth.currentUser && auth.currentUser.phoneNumber) {
+// User is signed in with phone — link email/password
+const credential = EmailAuthProvider.credential(email, password);
+userCred = await linkWithCredential(auth.currentUser, credential);
+} else {
+// Regular email/password signup
+userCred = await createUserWithEmailAndPassword(auth, email, password);
+}
+const user = userCred.user;
+
+// Save profile to Firestore
+const docRef = doc(db, 'users', user.uid);
+await setDoc(docRef, {
+profile: profile || { name: '', phone: '', email: email, picture: null },
+shifts: [],
+settings: getDefaultSettings(),
+slabs: getDefaultSlabs(),
+createdAt: serverTimestamp(),
+updatedAt: serverTimestamp()
+}, { merge: true });
+
+// Also save locally
+const data = loadLocalData();
+data.profile = profile || { name: '', phone: '', email: email, picture: null };
+saveLocalData(data);
+
+return userCred;
+} catch (err) {
+console.error('firebaseSignUp error:', err);
+throw err;
+}
+}
+
+async function firebaseLogIn(email, password) {
+const userCred = await signInWithEmailAndPassword(auth, email, password);
+return userCred;
+}
+
+async function firebaseSendOtp(phone, isSignup = true) {
+// phone should be in E.164 format, e.g., "+971501234567"
+if (!phone.startsWith('+')) {
+phone = '+971' + phone.replace(/^0+/, '');
+}
+// Clean up: remove any non-digit except +
+phone = phone.replace(/[^\d+]/g, '');
+
+// Create RecaptchaVerifier
+const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+'size': 'invisible',
+'callback': () => { /* resolved */ }
+});
+
+if (isSignup) {
+signupRecaptchaVerifier = verifier;
+} else {
+forgotRecaptchaVerifier = verifier;
+}
+
+const result = await signInWithPhoneNumber(auth, phone, verifier);
+if (isSignup) {
+signupVerificationId = result.verificationId;
+} else {
+fpVerificationId = result.verificationId;
+}
+return { verificationId: result.verificationId };
+}
+
+async function firebaseVerifyOtp(verificationId, code, isSignup = true) {
+if (!verificationId) {
+throw new Error('No verification ID found. Please request a new OTP.');
+}
+const credential = PhoneAuthProvider.credential(verificationId, code);
+// This signs the user in with phone
+const userCred = await signInWithPhoneNumber(auth, credential);
+return userCred;
+}
+
+// ──────────────────────────────────────────────────────────────
+// SCREEN NAVIGATION
+// ──────────────────────────────────────────────────────────────
+function showScreen(name) {
+Object.keys(screens).forEach(key => {
+const el = screens[key];
+if (el) {
+el.classList.remove('active');
+if (key === 'mainApp') {
+el.style.display = 'none';
+}
+}
+});
+const target = screens[name];
+if (target) {
+target.classList.add('active');
+if (name === 'mainApp') {
+target.style.display = 'block';
+}
+}
+const fab = document.getElementById('fabOpen');
+if (name === 'mainApp') {
+fab.classList.remove('fab-hidden');
+} else {
+fab.classList.add('fab-hidden');
+}
+}
+
+// ──────────────────────────────────────────────────────────────
+// TAB SWITCHING
+// ──────────────────────────────────────────────────────────────
+function switchTab(tabId) {
+Object.keys(tabs).forEach(key => {
+tabs[key].classList.remove('active');
+});
+if (tabs[tabId]) {
+tabs[tabId].classList.add('active');
+}
+profileDropdown.classList.remove('open');
+if (tabId === 'dashboard') {
+renderDashboard();
+}
+if (tabId === 'slab') {
+renderSlabTab();
+}
+if (tabId === 'rates') {
+loadRatesSettings();
+}
+if (tabId === 'profile') {
+loadProfileSettings();
+}
+document.querySelectorAll('.tabs button').forEach(btn => {
+btn.classList.toggle('active', btn.dataset.tab === tabId);
+});
+}
+
+// ──────────────────────────────────────────────────────────────
+// LOGIN / SIGNUP
+// ──────────────────────────────────────────────────────────────
+let otpTimerInterval = null;
+
+function startOtpTimer() {
+let seconds = 120;
+clearInterval(otpTimerInterval);
+otpTimerInterval = setInterval(() => {
+seconds--;
+const m = Math.floor(seconds / 60);
+const s = seconds % 60;
+otpTimer.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+if (seconds <= 0) {
+clearInterval(otpTimerInterval);
+otpTimer.textContent = 'Expired';
+otpResendBtn.disabled = false;
+otpResendBtn.textContent = 'Resend';
+showToast('⌛ OTP expired. Tap Resend.');
+}
+}, 1000);
+}
+
+// Login tabs
+loginTabs.forEach(tab => {
+tab.addEventListener('click', function() {
+loginTabs.forEach(t => t.classList.remove('active'));
+this.classList.add('active');
+const target = this.dataset.tab;
+if (target === 'signup') {
+signupForm.style.display = 'block';
+loginForm.style.display = 'none';
+otpSection.classList.remove('open');
+forgotPwContainer.style.display = 'none';
+} else {
+signupForm.style.display = 'none';
+loginForm.style.display = 'block';
+otpSection.classList.remove('open');
+forgotPwContainer.style.display = 'none';
+}
+});
+});
+
+// ─── UAE Phone Masking ───
+function setupPhoneMasking(inputEl) {
+if (!inputEl) return;
+inputEl.addEventListener('input', function() {
+let val = this.value.replace(/\D/g, '');
+if (val.startsWith('0')) {
+val = val.substring(1);
+}
+if (val.length > 9) val = val.substring(0, 9);
+this.value = val;
+});
+inputEl.addEventListener('paste', function(e) {
+const paste = (e.clipboardData || window.clipboardData).getData('text');
+const digits = paste.replace(/\D/g, '');
+let val = digits;
+if (val.startsWith('0')) val = val.substring(1);
+if (val.length > 9) val = val.substring(0, 9);
+this.value = val;
+e.preventDefault();
+});
+}
+
+const signupPhoneInput = getEl('signupPhone');
+const profilePhoneInput = getEl('profilePhone');
+const fpPhoneInput = getEl('fpStep2Input');
+
+setupPhoneMasking(signupPhoneInput);
+setupPhoneMasking(profilePhoneInput);
+setupPhoneMasking(fpPhoneInput);
+
+// ─── Signup submit ───
+let signupData = {};
+
+signupSubmitBtn.addEventListener('click', async function(e) {
+e.preventDefault();
+const firstName = getEl('signupFirstName').value.trim();
+const lastName = getEl('signupLastName').value.trim();
+const email = getEl('signupEmail').value.trim();
+const phone = signupPhoneInput.value.trim();
+const password = getEl('signupPassword').value.trim();
+
+if (!firstName || !lastName || !email || !phone || !password) {
+showToast('Please fill in all fields.');
+return;
+}
+if (password.length < 6) {
+showToast('Password must be at least 6 characters.');
+return;
+}
+if (phone.length < 9) {
+showToast('Please enter a valid 9-digit phone number.');
+return;
+}
+
+signupData = { firstName, lastName, email, phone, password };
+
+const displayPhone = phone.length > 6 ? phone.slice(0, 4) + ' ****' + phone.slice(-4) : phone;
+otpPhoneDisplay.textContent = '+971 ' + (displayPhone || '50 ****567');
+otpSection.classList.add('open');
+showToast('📱 Sending verification code to +971 ' + displayPhone);
+
+try {
+const fullPhone = '+971' + phone.replace(/^0+/, '');
+const result = await firebaseSendOtp(fullPhone, true);
+signupVerificationId = result.verificationId;
+startOtpTimer();
+if (otpDigits.length) otpDigits[0].focus();
+} catch (err) {
+console.error('sendOtp error:', err);
+showToast('❌ Failed to send OTP: ' + (err.message || 'unknown error'));
+otpSection.classList.remove('open');
+}
+});
+
+// OTP input auto-focus
+otpDigits.forEach((input, idx) => {
+input.addEventListener('input', function() {
+this.value = this.value.replace(/\D/g, '').slice(0, 1);
+if (this.value && idx < otpDigits.length - 1) {
+otpDigits[idx + 1].focus();
+}
+});
+input.addEventListener('keydown', function(e) {
+if (e.key === 'Backspace' && !this.value && idx > 0) {
+otpDigits[idx - 1].focus();
+}
+});
+input.addEventListener('paste', function(e) {
+const paste = (e.clipboardData || window.clipboardData).getData('text');
+const digits = paste.replace(/\D/g, '').slice(0, 6);
+if (digits.length) {
+digits.split('').forEach((d, i) => {
+if (otpDigits[i]) otpDigits[i].value = d;
+});
+if (digits.length === 6) {
+otpVerifyBtn.focus();
+}
+e.preventDefault();
+}
+});
+});
+
+// OTP Verify
+otpVerifyBtn.addEventListener('click', async function() {
+let code = '';
+otpDigits.forEach(d => code += d.value);
+if (code.length !== 6) {
+showToast('Please enter the 6-digit code.');
+return;
+}
+
+showToast('✅ Verifying...');
+
+try {
+const result = await firebaseVerifyOtp(signupVerificationId, code, true);
+// User is now signed in with phone
+showToast('✅ Phone verified! Creating your account...');
+
+// Now create the email/password account and link it
+const { firstName, lastName, email, phone, password } = signupData;
+const profile = {
+name: (firstName || '') + ' ' + (lastName || ''),
+phone: phone || '',
+email: email || '',
+picture: null,
+};
+
+await firebaseSignUp(email, password, profile);
+
+// Load data from Firestore
+const data = await firebaseLoadData(auth.currentUser.uid);
+appData = data;
+
+// Pre-fill onboard rates
+onboardNormalCut.value = data.settings.normalCut || 4.50;
+onboardCareemCut.value = data.settings.careemCut || 6.00;
+onboardAirportCut.value = data.settings.airportCut || 8.50;
+onboardFuelRate.value = data.settings.fuelRate || 0.55;
+onboardCycleStart.value = data.settings.cycleStartDay || 1;
+onboardCycleEnd.value = data.settings.cycleEndDay || 15;
+renderOnboardSlabs(data.slabs || getDefaultSlabs());
+
+showScreen('onboardingRates');
+showToast('🎉 Account created! Set your rates.');
+otpSection.classList.remove('open');
+} catch (err) {
+console.error('verifyOtp error:', err);
+showToast('❌ Verification failed: ' + (err.message || 'unknown error'));
+}
+});
+
+// OTP Resend
+otpResendBtn.addEventListener('click', async function() {
+const phone = signupPhoneInput.value.trim() || '50 ****567';
+showToast('📱 Sending new code to +971 ' + phone);
+try {
+const fullPhone = '+971' + phone.replace(/^0+/, '');
+const result = await firebaseSendOtp(fullPhone, true);
+signupVerificationId = result.verificationId;
+startOtpTimer();
+this.disabled = true;
+this.textContent = 'Sending...';
+setTimeout(() => {
+this.disabled = false;
+this.textContent = 'Resend';
+}, 3000);
+} catch (err) {
+showToast('❌ Failed to resend OTP: ' + (err.message || 'unknown error'));
+}
+});
+
+// ─── Login submit ───
+loginSubmitBtn.addEventListener('click', async function(e) {
+e.preventDefault();
+const email = getEl('loginEmail').value.trim();
+const password = getEl('loginPassword').value.trim();
+
+if (!email || !password) {
+showToast('Please enter email and password.');
+return;
+}
+
+showToast('🔐 Logging in...');
+try {
+const userCred = await firebaseLogIn(email, password);
+showToast('✅ Welcome back!');
+// Auth state listener will handle the rest
+} catch (err) {
+console.error('login error:', err);
+showToast('❌ Invalid credentials. Please try again.');
+}
+});
+
+// Allow Enter key on login form
+getEl('loginPassword').addEventListener('keydown', function(e) {
+if (e.key === 'Enter') { loginSubmitBtn.click(); }
+});
+getEl('loginEmail').addEventListener('keydown', function(e) {
+if (e.key === 'Enter') { loginSubmitBtn.click(); }
+});
+
+// ─── Forgot Password Flow ───
+let fpCurrentStep = 1;
+let fpOtpCode = '';
+
+function showForgotStep(step) {
+document.querySelectorAll('.forgot-step').forEach(el => el.classList.remove('active'));
+const target = document.querySelector('.forgot-step[data-step="' + step + '"]');
+if (target) target.classList.add('active');
+fpCurrentStep = step;
+}
+
+function resetForgotFlow() {
+fpCurrentStep = 1;
+fpMethod = 'email';
+fpOtpCode = '';
+fpNewPassword.value = '';
+fpConfirmPassword.value = '';
+fpStep2Input.value = '';
+fpStep2InputEmail.value = '';
+fpOtpDigits.forEach(d => d.value = '');
+clearInterval(fpOtpTimerInterval);
+fpOtpTimer.textContent = '2:00';
+fpResendOtpBtn.disabled = true;
+fpResendOtpBtn.textContent = 'Resend';
+document.querySelector('.forgot-step[data-step="1"]').classList.add('active');
+document.querySelector('.forgot-step[data-step="2"]').classList.remove('active');
+document.querySelector('.forgot-step[data-step="3"]').classList.remove('active');
+document.querySelector('.forgot-step[data-step="4"]').classList.remove('active');
+forgotPwContainer.style.display = 'block';
+loginForm.style.display = 'none';
+signupForm.style.display = 'none';
+fpStep2Input.style.display = 'none';
+fpStep2InputEmail.style.display = 'none';
+fpPhonePrefixWrap.style.display = 'none';
+fpStep2Label.textContent = 'Email';
+fpStep2Title.textContent = 'Enter your Email';
+fpStep2Sub.textContent = "We'll send a verification code.";
+}
+
+forgotPwLink.addEventListener('click', function(e) {
+e.preventDefault();
+resetForgotFlow();
+});
+
+fpBackToLogin.addEventListener('click', function() {
+forgotPwContainer.style.display = 'none';
+loginForm.style.display = 'block';
+signupForm.style.display = 'none';
+loginTabs.forEach(t => t.classList.remove('active'));
+loginTabs[0].classList.add('active');
+});
+
+fpChooseEmail.addEventListener('click', function() {
+fpMethod = 'email';
+fpStep2Input.style.display = 'none';
+fpStep2InputEmail.style.display = 'block';
+fpPhonePrefixWrap.style.display = 'none';
+fpStep2Label.textContent = 'Email';
+fpStep2Title.textContent = 'Enter your Email';
+fpStep2Sub.textContent = "We'll send a verification code.";
+fpStep2InputEmail.value = '';
+showForgotStep(2);
+});
+
+fpChoosePhone.addEventListener('click', function() {
+fpMethod = 'phone';
+fpStep2Input.style.display = 'block';
+fpStep2InputEmail.style.display = 'none';
+fpPhonePrefixWrap.style.display = 'flex';
+fpStep2Label.textContent = 'Phone Number';
+fpStep2Title.textContent = 'Enter your Phone';
+fpStep2Sub.textContent = "We'll send a verification code.";
+fpStep2Input.value = '';
+showForgotStep(2);
+});
+
+fpBackToStep1.addEventListener('click', function() { showForgotStep(1); });
+fpBackToStep2.addEventListener('click', function() { showForgotStep(2); });
+fpBackToStep3.addEventListener('click', function() { showForgotStep(3); });
+
+// Send OTP for forgot password
+fpSendOtpBtn.addEventListener('click', async function() {
+let value = '';
+if (fpMethod === 'email') {
+value = fpStep2InputEmail.value.trim();
+if (!value || !value.includes('@')) {
+showToast('Please enter a valid email.');
+return;
+}
+fpOtpDestination.textContent = value;
+// For email password reset, we just send the email directly
+try {
+await sendPasswordResetEmail(auth, value);
+showToast('📧 Password reset email sent to ' + value);
+showForgotStep(4); // skip to set new password
+// In the flow, we go to step 4 directly since email reset is handled via email link
+// But we'll adapt: we'll show step 4 and let user set new password
+// Actually, sendPasswordResetEmail sends an email with a link, not an OTP.
+// For simplicity, we'll just show a message and go back to login.
+showToast('✅ Check your email for the reset link.');
+setTimeout(() => {
+forgotPwContainer.style.display = 'none';
+loginForm.style.display = 'block';
+signupForm.style.display = 'none';
+loginTabs.forEach(t => t.classList.remove('active'));
+loginTabs[0].classList.add('active');
+}, 2000);
+return;
+} catch (err) {
+showToast('❌ Failed to send reset email: ' + (err.message || 'unknown error'));
+return;
+}
+} else {
+value = fpStep2Input.value.trim();
+if (value.length < 9) {
+showToast('Please enter a valid 9-digit phone number.');
+return;
+}
+const display = value.length > 6 ? value.slice(0, 4) + ' ****' + value.slice(-4) : value;
+fpOtpDestination.textContent = '+971 ' + display;
+
+try {
+const fullPhone = '+971' + value.replace(/^0+/, '');
+const result = await firebaseSendOtp(fullPhone, false);
+fpVerificationId = result.verificationId;
+showToast('📱 OTP sent to +971 ' + display);
+showForgotStep(3);
+startFpOtpTimer();
+fpResendOtpBtn.disabled = true;
+fpResendOtpBtn.textContent = 'Resend';
+if (fpOtpDigits.length) fpOtpDigits[0].focus();
+} catch (err) {
+showToast('❌ Failed to send OTP: ' + (err.message || 'unknown error'));
+}
+}
+});
+
+function startFpOtpTimer() {
+let seconds = 120;
+clearInterval(fpOtpTimerInterval);
+fpOtpTimerInterval = setInterval(() => {
+seconds--;
+const m = Math.floor(seconds / 60);
+const s = seconds % 60;
+fpOtpTimer.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+if (seconds <= 0) {
+clearInterval(fpOtpTimerInterval);
+fpOtpTimer.textContent = 'Expired';
+fpResendOtpBtn.disabled = false;
+fpResendOtpBtn.textContent = 'Resend';
+showToast('⌛ OTP expired. Tap Resend.');
+}
+}, 1000);
+}
+
+// FP OTP input handling
+fpOtpDigits.forEach((input, idx) => {
+input.addEventListener('input', function() {
+this.value = this.value.replace(/\D/g, '').slice(0, 1);
+if (this.value && idx < fpOtpDigits.length - 1) {
+fpOtpDigits[idx + 1].focus();
+}
+});
+input.addEventListener('keydown', function(e) {
+if (e.key === 'Backspace' && !this.value && idx > 0) {
+fpOtpDigits[idx - 1].focus();
+}
+});
+input.addEventListener('paste', function(e) {
+const paste = (e.clipboardData || window.clipboardData).getData('text');
+const digits = paste.replace(/\D/g, '').slice(0, 6);
+if (digits.length) {
+digits.split('').forEach((d, i) => {
+if (fpOtpDigits[i]) fpOtpDigits[i].value = d;
+});
+if (digits.length === 6) {
+fpVerifyOtpBtn.focus();
+}
+e.preventDefault();
+}
+});
+});
+
+// FP Verify OTP
+fpVerifyOtpBtn.addEventListener('click', async function() {
+let code = '';
+fpOtpDigits.forEach(d => code += d.value);
+if (code.length !== 6) {
+showToast('Please enter the 6-digit code.');
+return;
+}
+try {
+const result = await firebaseVerifyOtp(fpVerificationId, code, false);
+showToast('✅ Phone verified! You can now reset your password.');
+// For phone reset, we use the phone auth to sign in, then we can update password
+// Since the user is signed in with phone, we can update their password
+// But we need to link email/password first if not already linked.
+// For simplicity, we'll just show a message and let the user reset via email.
+showToast('✅ Phone verified. Please use email reset instead.');
+showForgotStep(4);
+fpNewPassword.focus();
+} catch (err) {
+showToast('❌ Verification failed: ' + (err.message || 'unknown error'));
+}
+});
+
+// FP Resend OTP
+fpResendOtpBtn.addEventListener('click', async function() {
+const value = fpStep2Input.value.trim();
+showToast('📱 Sending new code...');
+try {
+const fullPhone = '+971' + value.replace(/^0+/, '');
+const result = await firebaseSendOtp(fullPhone, false);
+fpVerificationId = result.verificationId;
+startFpOtpTimer();
+this.disabled = true;
+this.textContent = 'Sending...';
+setTimeout(() => {
+this.disabled = false;
+this.textContent = 'Resend';
+}, 3000);
+} catch (err) {
+showToast('❌ Failed to resend OTP: ' + (err.message || 'unknown error'));
+}
+});
+
+// FP Save Password (for phone reset flow)
+fpSavePasswordBtn.addEventListener('click', async function() {
+const pw = fpNewPassword.value.trim();
+const confirm = fpConfirmPassword.value.trim();
+if (!pw || pw.length < 6) {
+showToast('Password must be at least 6 characters.');
+return;
+}
+if (pw !== confirm) {
+showToast('Passwords do not match.');
+return;
+}
+try {
+if (auth.currentUser) {
+await auth.currentUser.updatePassword(pw);
+showToast('✅ Password updated successfully!');
+} else {
+showToast('⚠️ Please sign in first to update your password.');
+}
+forgotPwContainer.style.display = 'none';
+loginForm.style.display = 'block';
+signupForm.style.display = 'none';
+loginTabs.forEach(t => t.classList.remove('active'));
+loginTabs[0].classList.add('active');
+showToast('🔐 You can now log in with your new password.');
+} catch (err) {
+showToast('❌ Failed to update password: ' + (err.message || 'unknown error'));
+}
+});
+
+// ─── Social Login (dummy) ───
+function handleSocialLogin(provider) {
+let name = '',
+email = '',
+picture = null;
+if (provider === 'google') { name = 'Ali Al Maktoum';
+email = 'ali.google@example.com'; } else if (provider === 'facebook') { name = 'Sara Al Maktoum';
+email = 'sara.fb@example.com'; } else if (provider === 'x') { name = 'Khalid Al Maktoum';
+email = 'khalid.x@example.com'; }
+
+showToast('🔓 Signing in with ' + provider + '...');
+
+// For social login, we create a mock user and proceed
+// In production, you'd use Firebase social providers
+// For now, we'll just create a local account
+const appData = loadLocalData();
+appData.profile = { name, email, phone: '', picture };
+saveLocalData(appData);
+
+// Pre-fill onboard rates
+onboardNormalCut.value = appData.settings.normalCut || 4.50;
+onboardCareemCut.value = appData.settings.careemCut || 6.00;
+onboardAirportCut.value = appData.settings.airportCut || 8.50;
+onboardFuelRate.value = appData.settings.fuelRate || 0.55;
+onboardCycleStart.value = appData.settings.cycleStartDay || 1;
+onboardCycleEnd.value = appData.settings.cycleEndDay || 15;
+renderOnboardSlabs(appData.slabs || getDefaultSlabs());
+
+showScreen('onboardingRates');
+showToast('🎉 Welcome, ' + name + '! Set your rates.');
+}
+
+socialGoogle.addEventListener('click', function() { handleSocialLogin('google'); });
+socialFacebook.addEventListener('click', function() { handleSocialLogin('facebook'); });
+socialX.addEventListener('click', function() { handleSocialLogin('x'); });
+
+// ──────────────────────────────────────────────────────────────
+// ONBOARDING – RATES
+// ──────────────────────────────────────────────────────────────
+onboardRatesNext.addEventListener('click', function() {
+const normalCut = Number(onboardNormalCut.value) || 0;
+const careemCut = Number(onboardCareemCut.value) || 0;
+const airportCut = Number(onboardAirportCut.value) || 0;
+const fuelRate = Number(onboardFuelRate.value) || 0;
+
+if (normalCut < 0 || careemCut < 0 || airportCut < 0 || fuelRate < 0) {
+showToast('Rates cannot be negative.');
+return;
+}
+
+window._onboardSettings = { normalCut, careemCut, airportCut, fuelRate };
+showScreen('onboardingSlabs');
+});
+
+onboardRatesBack.addEventListener('click', function() {
+showScreen('login');
+});
+
+// ──────────────────────────────────────────────────────────────
+// ONBOARDING – SLABS
+// ──────────────────────────────────────────────────────────────
+let onboardSlabs = [];
+
+function renderOnboardSlabs(slabs) {
+onboardSlabs = slabs || getDefaultSlabs();
+const tbody = onboardSlabBody;
+if (!onboardSlabs.length) {
+tbody.innerHTML =
+'<tr><td colspan="4" class="empty-state" style="padding:12px;">No slabs defined. Add one below.</td></tr>';
+return;
+}
+tbody.innerHTML = onboardSlabs.map((slab, idx) =>
+'<tr>' +
+'<td><input type="number" class="onboard-slab-min" value="' + slab.min + '" step="0.01" min="0" data-idx="' +
+idx + '" /></td>' +
+'<td><input type="number" class="onboard-slab-max" value="' + slab.max + '" step="0.01" min="0" data-idx="' +
+idx + '" /></td>' +
+'<td><input type="number" class="onboard-slab-pct" value="' + slab.pct + '" step="0.1" min="0" max="100" data-idx="' +
+idx + '" /></td>' +
+'<td><div class="slab-actions"><button class="onboard-delete-slab text-red-600 hover:text-red-800 text-xs font-medium" data-idx="' +
+idx + '">✕</button></div></td>' +
+'</tr>'
+).join('');
+
+tbody.querySelectorAll('.onboard-delete-slab').forEach(btn => {
+btn.addEventListener('click', function() {
+const idx = parseInt(this.dataset.idx, 10);
+if (onboardSlabs.length <= 1) {
+showToast('You need at least one slab.');
+return;
+}
+onboardSlabs.splice(idx, 1);
+renderOnboardSlabs(onboardSlabs);
+showToast('Slab deleted');
+});
+});
+
+tbody.querySelectorAll('.onboard-slab-min, .onboard-slab-max, .onboard-slab-pct').forEach(inp => {
+inp.addEventListener('change', syncOnboardSlabs);
+inp.addEventListener('input', syncOnboardSlabs);
+});
+}
+
+function syncOnboardSlabs() {
+const rows = onboardSlabBody.querySelectorAll('tr');
+const newSlabs = [];
+rows.forEach(row => {
+const minInp = row.querySelector('.onboard-slab-min');
+const maxInp = row.querySelector('.onboard-slab-max');
+const pctInp = row.querySelector('.onboard-slab-pct');
+if (minInp && maxInp && pctInp) {
+const min = Number(minInp.value) || 0;
+const max = Number(maxInp.value) || 0;
+const pct = Number(pctInp.value) || 0;
+if (min >= 0 && max >= min && pct >= 0 && pct <= 100) {
+newSlabs.push({ min, max, pct });
+}
+}
+});
+if (newSlabs.length) {
+newSlabs.sort((a, b) => a.min - b.min);
+onboardSlabs = newSlabs;
+}
+}
+
+onboardAddSlabBtn.addEventListener('click', function() {
+const last = onboardSlabs[onboardSlabs.length - 1];
+const newMin = last ? last.max + 1 : 0;
+const newMax = last ? last.max + 1000 : 5000;
+onboardSlabs.push({ min: newMin, max: newMax, pct: 20 });
+renderOnboardSlabs(onboardSlabs);
+showToast('➕ New slab added');
+});
+
+onboardSlabsBack.addEventListener('click', function() {
+showScreen('onboardingRates');
+});
+
+onboardSlabsFinish.addEventListener('click', async function() {
+syncOnboardSlabs();
+
+if (!onboardSlabs || onboardSlabs.length === 0) {
+showToast('Please define at least one slab.');
+return;
+}
+
+let valid = true;
+for (const slab of onboardSlabs) {
+if (slab.min < 0 || slab.max < slab.min || slab.pct < 0 || slab.pct > 100) {
+valid = false;
+break;
+}
+}
+if (!valid) {
+showToast('⚠️ Please fix slab values (min ≤ max, 0–100%).');
+return;
+}
+
+const settings = window._onboardSettings || {};
+const startDay = parseInt(onboardCycleStart.value, 10) || 1;
+const endDay = parseInt(onboardCycleEnd.value, 10) || 15;
+
+const data = loadLocalData();
+data.settings.airportCut = settings.airportCut || 8.50;
+data.settings.careemCut = settings.careemCut || 6.00;
+data.settings.normalCut = settings.normalCut || 4.50;
+data.settings.fuelRate = settings.fuelRate || 0.55;
+data.settings.cycleStartDay = startDay;
+data.settings.cycleEndDay = endDay;
+data.slabs = onboardSlabs;
+
+// Preserve profile
+if (signupData) {
+data.profile = data.profile || {};
+if (!data.profile.name) {
+data.profile.name = (signupData.firstName || '') + ' ' + (signupData.lastName || '');
+}
+if (!data.profile.phone) {
+data.profile.phone = signupData.phone || '';
+}
+if (!data.profile.email) {
+data.profile.email = signupData.email || '';
+}
+}
+
+// Save to Firestore if user is logged in
+await firebaseSaveData(data);
+
+showToast('🎉 Welcome to CabCalc!');
+setTimeout(() => {
+initializeApp();
+}, 400);
+});
+
+// ──────────────────────────────────────────────────────────────
+// CORE CALCULATOR
+// ──────────────────────────────────────────────────────────────
+function calculateShift(revenue, totalTrips, airportTrips, careemTrips, km, salik, settings) {
+const normalTrips = Math.max(0, totalTrips - airportTrips - careemTrips);
+const normalCut = settings.normalCut || 0;
+const airportCut = settings.airportCut || 0;
+const careemCut = settings.careemCut || 0;
+const fuelRate = settings.fuelRate || 0;
+
+const cutNormal = normalTrips * normalCut;
+const cutAirport = airportTrips * airportCut;
+const cutCareem = careemTrips * careemCut;
+const fuelCost = km * fuelRate;
+const salikCost = salik || 0;
+
+const totalCut = cutNormal + cutAirport + cutCareem;
+const net = Math.max(0, revenue - totalCut - fuelCost - salikCost);
+
+return {
+normalTrips,
+cutNormal,
+cutAirport,
+cutCareem,
+totalCut,
+fuelCost,
+salikCost,
+net,
+};
+}
+
+// ──────────────────────────────────────────────────────────────
+// CYCLE & SLAB MATCHING
+// ──────────────────────────────────────────────────────────────
+function getCycleRevenue(shifts, startDay, endDay) {
+const now = new Date();
+const year = now.getFullYear();
+const month = now.getMonth();
+
+let startDate = new Date(year, month, startDay);
+let endDate = new Date(year, month, endDay);
+
+if (startDay > endDay) {
+if (now.getDate() <= endDay) {
+startDate = new Date(year, month - 1, startDay);
+endDate = new Date(year, month, endDay);
+} else {
+startDate = new Date(year, month, startDay);
+endDate = new Date(year, month + 1, endDay);
+}
+} else {
+if (now.getDate() > endDay) {
+startDate = new Date(year, month + 1, startDay);
+endDate = new Date(year, month + 1, endDay);
+} else if (now.getDate() < startDay) {
+startDate = new Date(year, month - 1, startDay);
+endDate = new Date(year, month - 1, endDay);
+}
+}
+
+let total = 0;
+shifts.forEach(shift => {
+if (!shift.date) return;
+const d = new Date(shift.date);
+if (d >= startDate && d <= endDate) {
+total += shift.revenue || 0;
+}
+});
+
+return { total, startDate, endDate };
+}
+
+function getSlabForRevenue(revenue, slabs) {
+const sorted = [...slabs].sort((a, b) => a.min - b.min);
+for (const slab of sorted) {
+if (revenue >= slab.min && revenue <= slab.max) {
+return slab;
+}
+}
+if (revenue > sorted[sorted.length - 1].max) {
+return sorted[sorted.length - 1];
+}
+return sorted[0] || { min: 0, max: 999999, pct: 0 };
+}
+
+function formatDate(d) {
+if (!d) return '—';
+return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+// ──────────────────────────────────────────────────────────────
+// DASHBOARD
+// ──────────────────────────────────────────────────────────────
+function renderDashboard() {
+const data = loadLocalData();
+const shifts = data.shifts || [];
+const settings = data.settings || getDefaultSettings();
+const slabs = data.slabs || getDefaultSlabs();
+
+shiftCount.textContent = shifts.length + ' shift' + (shifts.length !== 1 ? 's' : '');
+
+if (!shifts.length) {
+shiftTableBody.innerHTML = '';
+emptyShifts.style.display = 'block';
+} else {
+emptyShifts.style.display = 'none';
+const sorted = [...shifts].sort((a, b) => new Date(b.date) - new Date(a.date));
+shiftTableBody.innerHTML = sorted.map((shift, idx) => {
+const calc = calculateShift(
+shift.revenue || 0,
+shift.totalTrips || 0,
+shift.airportTrips || 0,
+shift.careemTrips || 0,
+shift.km || 0,
+shift.salik || 0,
+settings
+);
+const date = shift.date ? new Date(shift.date).toLocaleDateString('en-GB', { day: '2-digit',
+month: 'short' }) : '—';
+const origIdx = data.shifts.indexOf(shift);
+return '<tr>' +
+'<td>' + date + '</td>' +
+'<td>' + (shift.revenue || 0).toFixed(2) + '</td>' +
+'<td>' + (shift.totalTrips || 0) + '</td>' +
+'<td>' + (shift.airportTrips || 0) + '</td>' +
+'<td>' + (shift.careemTrips || 0) + '</td>' +
+'<td>' + calc.totalCut.toFixed(2) + '</td>' +
+'<td>' + calc.fuelCost.toFixed(2) + '</td>' +
+'<td>' + (shift.salik || 0).toFixed(2) + '</td>' +
+'<td><strong>' + calc.net.toFixed(2) + '</strong></td>' +
+'<td style="text-align:center;">' +
+'<button class="action-btn" data-edit="' + origIdx + '" aria-label="Edit shift">✎</button> ' +
+'<button class="action-btn delete-btn" data-delete="' + origIdx + '" aria-label="Delete shift">✕</button>' +
+'</td>' +
+'</tr>';
+}).join('');
+
+shiftTableBody.querySelectorAll('[data-edit]').forEach(btn => {
+btn.addEventListener('click', function() {
+const idx = parseInt(this.dataset.edit, 10);
+openShiftModal(idx);
+});
+});
+
+shiftTableBody.querySelectorAll('[data-delete]').forEach(btn => {
+btn.addEventListener('click', function() {
+const idx = parseInt(this.dataset.delete, 10);
+if (confirm('Delete this shift?')) {
+const data = loadLocalData();
+data.shifts.splice(idx, 1);
+saveLocalData(data);
+firebaseSaveData(data).catch(() => {});
+renderDashboard();
+updateStats();
+showToast('🗑️ Shift deleted');
+}
+});
+});
+}
+updateStats();
+}
+
+function updateStats() {
+const data = loadLocalData();
+const shifts = data.shifts || [];
+const settings = data.settings || getDefaultSettings();
+const slabs = data.slabs || getDefaultSlabs();
+
+let totalRevenue = 0;
+let totalNet = 0;
+
+shifts.forEach(shift => {
+totalRevenue += shift.revenue || 0;
+const calc = calculateShift(
+shift.revenue || 0,
+shift.totalTrips || 0,
+shift.airportTrips || 0,
+shift.careemTrips || 0,
+shift.km || 0,
+shift.salik || 0,
+settings
+);
+totalNet += calc.net;
+});
+
+sumTotalRevenue.textContent = totalRevenue.toFixed(2) + ' AED';
+sumNet.textContent = totalNet.toFixed(2) + ' AED';
+
+const cycle = getCycleRevenue(shifts, settings.cycleStartDay || 1, settings.cycleEndDay || 15);
+const slab = getSlabForRevenue(cycle.total, slabs);
+if (slab) {
+dashboardCommissionPct.innerHTML = slab.pct + '% <span class="sub">on ' + cycle.total.toFixed(0) +
+' AED cycle</span>';
+} else {
+dashboardCommissionPct.innerHTML = '— <span class="sub">no slab</span>';
+}
+}
+
+// ──────────────────────────────────────────────────────────────
+// SHIFT MODAL
+// ──────────────────────────────────────────────────────────────
+function openShiftModal(editIndex) {
+const data = loadLocalData();
+const settings = data.settings || getDefaultSettings();
+
+if (editIndex !== undefined && editIndex >= 0 && editIndex < data.shifts.length) {
+const shift = data.shifts[editIndex];
+shiftDate.value = shift.date || '';
+shiftRevenue.value = shift.revenue || '';
+shiftTotalTrips.value = shift.totalTrips || '';
+shiftAirport.value = shift.airportTrips || 0;
+shiftCareem.value = shift.careemTrips || 0;
+shiftKm.value = shift.km || 0;
+shiftSalik.value = shift.salik || 0;
+shiftEditIndex.value = editIndex;
+shiftSubmitBtn.textContent = '💾 Update Shift';
+shiftModalTitle.textContent = 'Edit Shift Entry';
+shiftModalSub.textContent = 'Update the details below.';
+} else {
+const today = new Date().toISOString().split('T')[0];
+shiftDate.value = today;
+shiftRevenue.value = '';
+shiftTotalTrips.value = '';
+shiftAirport.value = 0;
+shiftCareem.value = 0;
+shiftKm.value = 0;
+shiftSalik.value = 0;
+shiftEditIndex.value = -1;
+shiftSubmitBtn.textContent = '✅ Save Shift';
+shiftModalTitle.textContent = 'New Shift Entry';
+shiftModalSub.textContent = "Enter today's shift details — calculations are automatic.";
+}
+
+updateShiftPreview();
+shiftModal.classList.add('open');
+}
+
+function closeShiftModal() {
+shiftModal.classList.remove('open');
+}
+
+function updateShiftPreview() {
+const data = loadLocalData();
+const settings = data.settings || getDefaultSettings();
+
+const revenue = Number(shiftRevenue.value) || 0;
+const totalTrips = Number(shiftTotalTrips.value) || 0;
+const airportTrips = Number(shiftAirport.value) || 0;
+const careemTrips = Number(shiftCareem.value) || 0;
+const km = Number(shiftKm.value) || 0;
+const salik = Number(shiftSalik.value) || 0;
+
+const calc = calculateShift(revenue, totalTrips, airportTrips, careemTrips, km, salik, settings);
+
+previewNormal.textContent = calc.normalTrips;
+previewCompanyCut.textContent = calc.totalCut.toFixed(2) + ' AED';
+previewFuel.textContent = calc.fuelCost.toFixed(2) + ' AED';
+previewSalik.textContent = calc.salikCost.toFixed(2) + ' AED';
+previewNet.textContent = calc.net.toFixed(2) + ' AED';
+}
+
+shiftForm.addEventListener('submit', async function(e) {
+e.preventDefault();
+
+const date = shiftDate.value;
+const revenue = Number(shiftRevenue.value) || 0;
+const totalTrips = Number(shiftTotalTrips.value) || 0;
+const airportTrips = Number(shiftAirport.value) || 0;
+const careemTrips = Number(shiftCareem.value) || 0;
+const km = Number(shiftKm.value) || 0;
+const salik = Number(shiftSalik.value) || 0;
+
+if (!date) {
+showToast('Please select a date.');
+return;
+}
+if (revenue <= 0) {
+showToast('Revenue must be greater than 0.');
+return;
+}
+if (totalTrips <= 0) {
+showToast('Total trips must be greater than 0.');
+return;
+}
+
+const data = loadLocalData();
+const idx = parseInt(shiftEditIndex.value, 10);
+
+const shiftData = { date, revenue, totalTrips, airportTrips, careemTrips, km, salik };
+
+if (idx >= 0 && idx < data.shifts.length) {
+data.shifts[idx] = shiftData;
+showToast('✅ Shift updated');
+} else {
+data.shifts.push(shiftData);
+showToast('✅ Shift saved');
+}
+
+saveLocalData(data);
+await firebaseSaveData(data).catch(() => {});
+closeShiftModal();
+renderDashboard();
+updateStats();
+});
+
+shiftRevenue.addEventListener('input', updateShiftPreview);
+shiftTotalTrips.addEventListener('input', updateShiftPreview);
+shiftAirport.addEventListener('input', updateShiftPreview);
+shiftCareem.addEventListener('input', updateShiftPreview);
+shiftKm.addEventListener('input', updateShiftPreview);
+shiftSalik.addEventListener('input', updateShiftPreview);
+
+// ──────────────────────────────────────────────────────────────
+// RATES & CUTTING
+// ──────────────────────────────────────────────────────────────
+function loadRatesSettings() {
+const data = loadLocalData();
+const settings = data.settings || getDefaultSettings();
+settingAirportCut.value = settings.airportCut || 0;
+settingCareemCut.value = settings.careemCut || 0;
+settingNormalCut.value = settings.normalCut || 0;
+settingFuelRate.value = settings.fuelRate || 0;
+settingsSavedMsg.classList.remove('opacity-100');
+settingsSavedMsg.classList.add('opacity-0');
+}
+
+saveSettingsBtn.addEventListener('click', async function() {
+const data = loadLocalData();
+data.settings.airportCut = Number(settingAirportCut.value) || 0;
+data.settings.careemCut = Number(settingCareemCut.value) || 0;
+data.settings.normalCut = Number(settingNormalCut.value) || 0;
+data.settings.fuelRate = Number(settingFuelRate.value) || 0;
+saveLocalData(data);
+await firebaseSaveData(data).catch(() => {});
+settingsSavedMsg.classList.remove('opacity-0');
+settingsSavedMsg.classList.add('opacity-100');
+showToast('💾 Rates saved');
+renderDashboard();
+updateStats();
+});
+
+// ──────────────────────────────────────────────────────────────
+// SLAB & CYCLE
+// ──────────────────────────────────────────────────────────────
+function renderSlabTab() {
+const data = loadLocalData();
+const settings = data.settings || getDefaultSettings();
+const slabs = data.slabs || getDefaultSlabs();
+
+currentSlabs = slabs;
+currentSettings = settings;
+currentCycleStart = settings.cycleStartDay || 1;
+currentCycleEnd = settings.cycleEndDay || 15;
+
+cycleStartDay.value = currentCycleStart;
+cycleEndDay.value = currentCycleEnd;
+
+renderSlabTable(slabs);
+updateCycleDisplay();
+ocrStatus.classList.add('hidden');
+}
+
+function renderSlabTable(slabs) {
+if (!slabs || !slabs.length) {
+slabTableBody.innerHTML =
+'<tr><td colspan="4" class="empty-state" style="padding:12px;">No slabs defined. Add one below.</td></tr>';
+return;
+}
+slabTableBody.innerHTML = slabs.map((slab, idx) =>
+'<tr>' +
+'<td><input type="number" class="slab-min" value="' + slab.min + '" step="0.01" min="0" data-idx="' +
+idx + '" /></td>' +
+'<td><input type="number" class="slab-max" value="' + slab.max + '" step="0.01" min="0" data-idx="' +
+idx + '" /></td>' +
+'<td><input type="number" class="slab-pct" value="' + slab.pct + '" step="0.1" min="0" max="100" data-idx="' +
+idx + '" /></td>' +
+'<td><div class="slab-actions"><button class="delete-slab text-red-600 hover:text-red-800 text-xs font-medium" data-idx="' +
+idx + '">✕</button></div></td>' +
+'</tr>'
+).join('');
+
+slabTableBody.querySelectorAll('.delete-slab').forEach(btn => {
+btn.addEventListener('click', function() {
+const idx = parseInt(this.dataset.idx, 10);
+if (currentSlabs.length <= 1) {
+showToast('You need at least one slab.');
+return;
+}
+currentSlabs.splice(idx, 1);
+renderSlabTable(currentSlabs);
+showToast('Slab deleted');
+});
+});
+
+slabTableBody.querySelectorAll('.slab-min, .slab-max, .slab-pct').forEach(inp => {
+inp.addEventListener('change', syncSlabTable);
+inp.addEventListener('input', syncSlabTable);
+});
+}
+
+function syncSlabTable() {
+const rows = slabTableBody.querySelectorAll('tr');
+const newSlabs = [];
+rows.forEach(row => {
+const minInp = row.querySelector('.slab-min');
+const maxInp = row.querySelector('.slab-max');
+const pctInp = row.querySelector('.slab-pct');
+if (minInp && maxInp && pctInp) {
+const min = Number(minInp.value) || 0;
+const max = Number(maxInp.value) || 0;
+const pct = Number(pctInp.value) || 0;
+if (min >= 0 && max >= min && pct >= 0 && pct <= 100) {
+newSlabs.push({ min, max, pct });
+}
+}
+});
+if (newSlabs.length) {
+newSlabs.sort((a, b) => a.min - b.min);
+currentSlabs = newSlabs;
+updateCycleDisplay();
+}
+}
+
+function updateCycleDisplay() {
+const data = loadLocalData();
+const shifts = data.shifts || [];
+const settings = data.settings || getDefaultSettings();
+const slabs = currentSlabs.length ? currentSlabs : (data.slabs || getDefaultSlabs());
+
+const start = currentCycleStart;
+const end = currentCycleEnd;
+const cycle = getCycleRevenue(shifts, start, end);
+
+const startStr = formatDate(cycle.startDate);
+const endStr = formatDate(cycle.endDate);
+cycleRangeDisplay.textContent = startStr + ' – ' + endStr;
+
+monthlyRevenue.textContent = cycle.total.toFixed(2) + ' AED';
+
+const slab = getSlabForRevenue(cycle.total, slabs);
+if (slab) {
+matchedSlabDesc.textContent = slab.min + ' – ' + slab.max + ' AED';
+slabCommissionPct.textContent = slab.pct + '%';
+const estNet = cycle.total * (1 - slab.pct / 100);
+slabNetIncome.textContent = estNet.toFixed(2) + ' AED';
+} else {
+matchedSlabDesc.textContent = '—';
+slabCommissionPct.textContent = '—';
+slabNetIncome.textContent = '—';
+}
+}
+
+addSlabRowBtn.addEventListener('click', function() {
+const last = currentSlabs[currentSlabs.length - 1];
+const newMin = last ? last.max + 1 : 0;
+const newMax = last ? last.max + 1000 : 5000;
+currentSlabs.push({ min: newMin, max: newMax, pct: 20 });
+renderSlabTable(currentSlabs);
+showToast('➕ New slab added');
+});
+
+saveSlabsBtn.addEventListener('click', async function() {
+syncSlabTable();
+if (!currentSlabs || !currentSlabs.length) {
+showToast('Please define at least one slab.');
+return;
+}
+let valid = true;
+for (const slab of currentSlabs) {
+if (slab.min < 0 || slab.max < slab.min || slab.pct < 0 || slab.pct > 100) {
+valid = false;
+break;
+}
+}
+if (!valid) {
+showToast('⚠️ Please fix slab values (min ≤ max, 0–100%).');
+return;
+}
+const data = loadLocalData();
+data.slabs = currentSlabs;
+saveLocalData(data);
+await firebaseSaveData(data).catch(() => {});
+slabSavedMsg.classList.remove('opacity-0');
+slabSavedMsg.classList.add('opacity-100');
+showToast('💾 Slabs saved');
+updateCycleDisplay();
+renderDashboard();
+updateStats();
+});
+
+saveCycleBtn.addEventListener('click', async function() {
+const start = parseInt(cycleStartDay.value, 10) || 1;
+const end = parseInt(cycleEndDay.value, 10) || 15;
+
+if (start < 1 || start > 31 || end < 1 || end > 31) {
+showToast('Please select valid days (1–31).');
+return;
+}
+
+const data = loadLocalData();
+data.settings.cycleStartDay = start;
+data.settings.cycleEndDay = end;
+saveLocalData(data);
+await firebaseSaveData(data).catch(() => {});
+
+currentCycleStart = start;
+currentCycleEnd = end;
+
+cycleStatus.classList.remove('opacity-0');
+cycleStatus.classList.add('opacity-100');
+showToast('📅 Cycle saved');
+updateCycleDisplay();
+renderDashboard();
+updateStats();
+});
+
+// ──────────────────────────────────────────────────────────────
+// SLAB OCR (unchanged)
+// ──────────────────────────────────────────────────────────────
+let slabOcrImageData = null;
+
+slabImageInput.addEventListener('click', function() {
+slabImageInputFile.click();
+});
+
+slabImageInputFile.addEventListener('change', function(e) {
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(ev) {
+slabImagePreview.innerHTML = '<img src="' + ev.target.result + '" alt="Slab image" />';
+slabOcrImageData = ev.target.result;
+slabOcrBtn.disabled = false;
+ocrStatus.className = 'ocr-status mt-1';
+ocrStatus.textContent = '📸 Image loaded. Tap Auto‑Fill to extract slabs.';
+ocrStatus.classList.remove('hidden');
+};
+reader.readAsDataURL(file);
+});
+
+slabCameraBtn.addEventListener('click', function() {
+if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+showToast('📷 Camera not supported on this device.');
+return;
+}
+const input = document.createElement('input');
+input.type = 'file';
+input.accept = 'image/*';
+input.capture = 'environment';
+input.onchange = function(e) {
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(ev) {
+slabImagePreview.innerHTML = '<img src="' + ev.target.result + '" alt="Slab image" />';
+slabOcrImageData = ev.target.result;
+slabOcrBtn.disabled = false;
+ocrStatus.className = 'ocr-status mt-1';
+ocrStatus.textContent = '📸 Image captured. Tap Auto‑Fill to extract slabs.';
+ocrStatus.classList.remove('hidden');
+};
+reader.readAsDataURL(file);
+};
+input.click();
+});
+
+slabOcrBtn.addEventListener('click', function() {
+if (!slabOcrImageData) {
+showToast('Please upload or capture an image first.');
+return;
+}
+
+ocrStatus.className = 'ocr-status mt-1 loading';
+ocrStatus.textContent = '🔍 Analyzing image with OCR...';
+ocrStatus.classList.remove('hidden');
+slabOcrBtn.disabled = true;
+
+if (typeof Tesseract !== 'undefined') {
+Tesseract.recognize(slabOcrImageData, 'eng', {
+logger: function(m) {
+if (m.status === 'recognizing text') {
+ocrStatus.textContent = '🔍 OCR: ' + Math.round(m.progress * 100) + '%';
+}
+}
+})
+.then(function(result) {
+const text = result.data.text;
+ocrStatus.className = 'ocr-status mt-1 success';
+ocrStatus.textContent = '✅ OCR complete. Extracted ' + text.length + ' characters.';
+slabOcrBtn.disabled = false;
+
+const extracted = extractSlabsFromText(text);
+if (extracted && extracted.length) {
+currentSlabs = extracted;
+renderSlabTable(currentSlabs);
+showToast('📊 ' + extracted.length + ' slabs extracted from image!');
+updateCycleDisplay();
+} else {
+showToast('⚠️ Could not parse slabs from image. Try a clearer photo.');
+}
+})
+.catch(function(err) {
+ocrStatus.className = 'ocr-status mt-1 error';
+ocrStatus.textContent = '❌ OCR error: ' + err.message;
+slabOcrBtn.disabled = false;
+showToast('❌ OCR failed. Please enter slabs manually.');
+});
+} else {
+ocrStatus.className = 'ocr-status mt-1 error';
+ocrStatus.textContent = '❌ Tesseract library not loaded.';
+slabOcrBtn.disabled = false;
+showToast('❌ OCR library not available.');
+}
+});
+
+function extractSlabsFromText(text) {
+const lines = text.split('\n').filter(line => line.trim());
+const slabs = [];
+const regex = /(\d+)\s*[-–—to]\s*(\d+)\s*:\s\s*%/i;
+
+for (const line of lines) {
+const match = line.match(regex);
+if (match) {
+const min = parseInt(match[1], 10);
+const max = parseInt(match[2], 10);
+const pct = parseFloat(match[3]);
+if (!isNaN(min) && !isNaN(max) && !isNaN(pct) && min >= 0 && max >= min && pct >= 0 && pct <=
+100) {
+slabs.push({ min, max, pct });
+}
+}
+}
+
+if (slabs.length) {
+slabs.sort((a, b) => a.min - b.min);
+return slabs;
+}
+
+const numbers = text.match(/\d+.?\d*/g);
+if (numbers && numbers.length >= 6) {
+const numArr = numbers.map(Number);
+for (let i = 0; i < numArr.length - 2; i += 3) {
+const min = numArr[i];
+const max = numArr[i + 1];
+const pct = numArr[i + 2];
+if (!isNaN(min) && !isNaN(max) && !isNaN(pct) && min >= 0 && max >= min && pct >= 0 && pct <=
+100) {
+slabs.push({ min, max, pct });
+}
+}
+if (slabs.length) {
+slabs.sort((a, b) => a.min - b.min);
+return slabs;
+}
+}
+
+return null;
+}
+
+// ──────────────────────────────────────────────────────────────
+// PROFILE
+// ──────────────────────────────────────────────────────────────
+function loadProfileSettings() {
+const data = loadLocalData();
+const profile = data.profile || {};
+profileName.value = profile.name || '';
+profilePhone.value = profile.phone || '';
+profileEmail.value = profile.email || '';
+
+if (profile.picture) {
+profilePicImg.src = profile.picture;
+profilePicImg.style.display = 'block';
+profilePicPlaceholder.style.display = 'none';
+} else {
+profilePicImg.style.display = 'none';
+profilePicPlaceholder.style.display = 'flex';
+}
+
+profileSavedMsg.classList.remove('opacity-100');
+profileSavedMsg.classList.add('opacity-0');
+
+updateAvatar(profile);
+}
+
+function updateAvatar(profile) {
+if (profile && profile.picture) {
+avatarImage.src = profile.picture;
+avatarImage.style.display = 'block';
+avatarPlaceholder.style.display = 'none';
+} else {
+avatarImage.style.display = 'none';
+avatarPlaceholder.style.display = 'flex';
+const name = (profile && profile.name) || '';
+if (name) {
+const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+avatarPlaceholder.textContent = initials || '👤';
+} else {
+avatarPlaceholder.textContent = '👤';
+}
+}
+}
+
+saveProfileBtn.addEventListener('click', async function() {
+const data = loadLocalData();
+data.profile = data.profile || {};
+data.profile.name = profileName.value.trim() || '';
+const phoneVal = profilePhone.value.trim();
+data.profile.phone = phoneVal || '';
+data.profile.email = profileEmail.value.trim() || '';
+saveLocalData(data);
+await firebaseSaveData(data).catch(() => {});
+profileSavedMsg.classList.remove('opacity-0');
+profileSavedMsg.classList.add('opacity-100');
+updateAvatar(data.profile);
+showToast('💾 Profile saved');
+});
+
+profilePicUploadBtn.addEventListener('click', function() {
+profilePicInput.click();
+});
+
+profilePicCameraBtn.addEventListener('click', function() {
+if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+showToast('📷 Camera not supported.');
+return;
+}
+const input = document.createElement('input');
+input.type = 'file';
+input.accept = 'image/*';
+input.capture = 'environment';
+input.onchange = function(e) {
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(ev) {
+const imgData = ev.target.result;
+profilePicImg.src = imgData;
+profilePicImg.style.display = 'block';
+profilePicPlaceholder.style.display = 'none';
+const data = loadLocalData();
+data.profile = data.profile || {};
+data.profile.picture = imgData;
+saveLocalData(data);
+firebaseSaveData(data).catch(() => {});
+updateAvatar(data.profile);
+showToast('📷 Profile picture updated');
+};
+reader.readAsDataURL(file);
+};
+input.click();
+});
+
+profilePicClearBtn.addEventListener('click', async function() {
+profilePicImg.style.display = 'none';
+profilePicPlaceholder.style.display = 'flex';
+const data = loadLocalData();
+data.profile = data.profile || {};
+data.profile.picture = null;
+saveLocalData(data);
+await firebaseSaveData(data).catch(() => {});
+updateAvatar(data.profile);
+showToast('Profile picture cleared');
+});
+
+profilePicInput.addEventListener('change', function(e) {
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(ev) {
+const imgData = ev.target.result;
+profilePicImg.src = imgData;
+profilePicImg.style.display = 'block';
+profilePicPlaceholder.style.display = 'none';
+const data = loadLocalData();
+data.profile = data.profile || {};
+data.profile.picture = imgData;
+saveLocalData(data);
+firebaseSaveData(data).catch(() => {});
+updateAvatar(data.profile);
+showToast('📸 Profile picture updated');
+};
+reader.readAsDataURL(file);
+});
+
+// ──────────────────────────────────────────────────────────────
+// PROFILE DROPDOWN
+// ──────────────────────────────────────────────────────────────
+profileBtn.addEventListener('click', function(e) {
+e.stopPropagation();
+profileDropdown.classList.toggle('open');
+});
+
+document.addEventListener('click', function(e) {
+if (!profileDropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+profileDropdown.classList.remove('open');
+}
+});
+
+document.querySelectorAll('.dropdown-item[data-action]').forEach(item => {
+item.addEventListener('click', function() {
+const action = this.dataset.action;
+profileDropdown.classList.remove('open');
+
+switch (action) {
+case 'dashboard':
+switchTab('dashboard');
+break;
+case 'target':
+switchTab('slab');
+break;
+case 'cutting':
+switchTab('rates');
+break;
+case 'settings':
+switchTab('profile');
+break;
+case 'invite':
+handleInvite();
+break;
+case 'export-backup':
+handleExportBackup();
+break;
+case 'import-backup':
+importBackupInput.click();
+break;
+case 'terms':
+termsModal.classList.add('open');
+break;
+case 'feedback':
+feedbackModal.classList.add('open');
+break;
+case 'logout':
+handleLogout();
+break;
+default:
+break;
+}
+});
+});
+
+importBackupInput.addEventListener('change', function(e) {
+const file = e.target.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = function(ev) {
+try {
+const data = JSON.parse(ev.target.result);
+if (data.shifts && data.settings && data.slabs) {
+saveLocalData(data);
+firebaseSaveData(data).catch(() => {});
+showToast('✅ Backup imported successfully!');
+initializeApp();
+} else {
+showToast('❌ Invalid backup file.');
+}
+} catch (_) {
+showToast('❌ Could not parse backup file.');
+}
+};
+reader.readAsText(file);
+this.value = '';
+});
+
+function handleExportBackup() {
+const data = loadLocalData();
+const json = JSON.stringify(data, null, 2);
+const blob = new Blob([json], { type: 'application/json' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = 'cabcalc_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+a.click();
+URL.revokeObjectURL(url);
+showToast('📤 Backup exported');
+}
+
+function handleInvite() {
+const url = window.location.href;
+if (navigator.share) {
+navigator.share({ url: url }).catch(() => {});
+} else {
+const dummy = document.createElement('textarea');
+dummy.value = url;
+document.body.appendChild(dummy);
+dummy.select();
+try {
+document.execCommand('copy');
+showToast('📤 Link copied! Share with friends.');
+} catch (_) {
+showToast('📤 Share: ' + url);
+}
+document.body.removeChild(dummy);
+}
+}
+
+async function handleLogout() {
+try {
+await signOut(auth);
+} catch (_) {}
+const data = loadLocalData();
+data.profile = { name: '', phone: '', email: '', picture: null };
+saveLocalData(data);
+currentUser = null;
+showToast('🚪 Logged out');
+signupData = {};
+setTimeout(() => {
+showScreen('login');
+}, 300);
+}
+
+// ──────────────────────────────────────────────────────────────
+// MODALS
+// ──────────────────────────────────────────────────────────────
+function closeTerms() { termsModal.classList.remove('open'); }
+termsModalClose.addEventListener('click', closeTerms);
+termsAcceptBtn.addEventListener('click', closeTerms);
+termsModal.addEventListener('click', function(e) { if (e.target === this) closeTerms(); });
+
+loginTermsLink.addEventListener('click', function(e) {
+e.preventDefault();
+termsModal.classList.add('open');
+});
+
+function closeFeedback() { feedbackModal.classList.remove('open'); }
+feedbackModalClose.addEventListener('click', closeFeedback);
+feedbackModal.addEventListener('click', function(e) { if (e.target === this) closeFeedback(); });
+
+feedbackForm.addEventListener('submit', function(e) {
+e.preventDefault();
+const message = feedbackMessage.value.trim();
+const email = feedbackEmail.value.trim();
+if (!message) {
+showToast('Please enter a message.');
+return;
+}
+console.log('[Feedback]', { message, email });
+showToast('💬 Thank you for your feedback!');
+feedbackForm.reset();
+closeFeedback();
+});
+
+// ──────────────────────────────────────────────────────────────
+// OFFLINE INDICATOR
+// ──────────────────────────────────────────────────────────────
+function updateOfflineStatus() {
+if (!navigator.onLine) {
+offlineBadge.classList.add('show');
+} else {
+offlineBadge.classList.remove('show');
+}
+}
+
+window.addEventListener('online', updateOfflineStatus);
+window.addEventListener('offline', updateOfflineStatus);
+
+// ──────────────────────────────────────────────────────────────
+// AUTH STATE LISTENER
+// ──────────────────────────────────────────────────────────────
+onAuthStateChanged(auth, async (user) => {
+if (user) {
+currentUser = user;
+console.log('✅ User signed in:', user.uid);
+
+// Load data from Firestore
+const data = await firebaseLoadData(user.uid);
+appData = data;
+
+// Update profile in state
+const profile = data.profile || { name: '', phone: '', email: '', picture: null };
+if (profile.email && !profile.email.includes('@')) {
+// If email is missing, use the auth email
+profile.email = user.email || '';
+}
+data.profile = profile;
+saveLocalData(data);
+
+// Check if user has completed onboarding (has shifts or settings)
+const hasData = data.shifts && data.shifts.length > 0;
+const hasSettings = data.settings && Object.keys(data.settings).length > 0;
+
+if (hasData || hasSettings) {
+// User has data, go to main app
+showScreen('mainApp');
+updateAvatar(profile);
+renderDashboard();
+updateStats();
+loadRatesSettings();
+renderSlabTab();
+updateOfflineStatus();
+showToast('👋 Welcome back, ' + (profile.name || 'Driver') + '!');
+} else {
+// New user, go to onboarding
+onboardNormalCut.value = data.settings.normalCut || 4.50;
+onboardCareemCut.value = data.settings.careemCut || 6.00;
+onboardAirportCut.value = data.settings.airportCut || 8.50;
+onboardFuelRate.value = data.settings.fuelRate || 0.55;
+onboardCycleStart.value = data.settings.cycleStartDay || 1;
+onboardCycleEnd.value = data.settings.cycleEndDay || 15;
+renderOnboardSlabs(data.slabs || getDefaultSlabs());
+showScreen('onboardingRates');
+showToast('👋 Welcome! Set your rates.');
+}
+} else {
+currentUser = null;
+console.log('👤 User signed out');
+// Show login screen
+showScreen('login');
+// Reset signup data
+signupData = {};
+// Clear any OTP state
+signupVerificationId = null;
+otpSection.classList.remove('open');
+forgotPwContainer.style.display = 'none';
+loginForm.style.display = 'block';
+signupForm.style.display = 'none';
+loginTabs.forEach(t => t.classList.remove('active'));
+loginTabs[0].classList.add('active');
+}
+});
+
+// ──────────────────────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────────────────────
+function initializeApp() {
+// onAuthStateChanged will handle the flow
+// But if we're already logged in, it will trigger
+// This is a no-op since the listener handles it
+console.log('🚕 CabCalc v2 — Firebase v10 connected');
+}
+
+// ──────────────────────────────────────────────────────────────
+// FAB & MODAL CLOSE
+// ──────────────────────────────────────────────────────────────
+fabOpen.addEventListener('click', function() {
+openShiftModal(-1);
+});
+
+document.getElementById('modalClose').addEventListener('click', closeShiftModal);
+shiftModal.addEventListener('click', function(e) {
+if (e.target === this) closeShiftModal();
+});
+
+// ──────────────────────────────────────────────────────────────
+// KEYBOARD SHORTCUTS
+// ──────────────────────────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+profileDropdown.classList.remove('open');
+closeShiftModal();
+closeTerms();
+closeFeedback();
+}
+});
+
+// ──────────────────────────────────────────────────────────────
+// BOOT
+// ──────────────────────────────────────────────────────────────
+// The auth state listener will handle the initial state.
+// But we need to ensure the login screen is shown initially.
+showScreen('login');
+
+// Pre-fill onboard rates from local data
+const initialData = loadLocalData();
+onboardNormalCut.value = initialData.settings.normalCut || 4.50;
+onboardCareemCut.value = initialData.settings.careemCut || 6.00;
+onboardAirportCut.value = initialData.settings.airportCut || 8.50;
+onboardFuelRate.value = initialData.settings.fuelRate || 0.55;
+onboardCycleStart.value = initialData.settings.cycleStartDay || 1;
+onboardCycleEnd.value = initialData.settings.cycleEndDay || 15;
+renderOnboardSlabs(initialData.slabs || getDefaultSlabs());
+
+console.log('🚕 CabCalc v2 — Firebase v10 Modular SDK connected');
+console.log('📦 Data storage: Firestore + localStorage fallback');
+console.log('📱 ' + (navigator.onLine ? 'Online' : 'Offline') + ' mode');
+
+// Expose key functions to window for debugging
+window.__cabcalc = {
+auth,
+db,
+currentUser: () => currentUser,
+loadData: loadLocalData,
+saveData: saveLocalData,
+firebaseSaveData,
+firebaseLoadData,
+signOut: handleLogout,
+};
+</script>
+
+</body>
+</html>
