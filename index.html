@@ -1075,6 +1075,7 @@ display: flex;
 justify-content: center;
 }
 </style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/es-module-shims/1.8.0/es-module-shims.min.js"></script>
 </head>
 <body>
 
@@ -1662,11 +1663,20 @@ SCREEN: MAIN APP
 <!-- ──────────────────────────────────────────────────────────────
 JAVASCRIPT — Firebase v10 Modular SDK via CDN
 ────────────────────────────────────────────────────────────── -->
+<script type="importmap">
+{
+  "imports": {
+    "firebase-app": "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js",
+    "firebase-auth": "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js",
+    "firebase-firestore": "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"
+  }
+}
+</script>
 <script type="module">
 // ──────────────────────────────────────────────────────────────
 // IMPORTS
 // ──────────────────────────────────────────────────────────────
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
+import { initializeApp } from 'firebase-app';
 import {
 getAuth,
 createUserWithEmailAndPassword,
@@ -1681,7 +1691,7 @@ PhoneAuthProvider,
 linkWithCredential,
 EmailAuthProvider,
 fetchSignInMethodsForEmail
-} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
+} from 'firebase-auth';
 import {
 getFirestore,
 doc,
@@ -1690,7 +1700,7 @@ getDoc,
 updateDoc,
 deleteDoc,
 serverTimestamp
-} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
+} from 'firebase-firestore';
 
 // ──────────────────────────────────────────────────────────────
 // FIREBASE CONFIG
