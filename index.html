@@ -1744,7 +1744,7 @@ let forgotRecaptchaVerifier = null;
 // ──────────────────────────────────────────────────────────────
 function getEl(id) { return document.getElementById(id); }
 
-const $`` = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
+const $ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
 
 const screens = {
 login: getEl('login-screen'),
@@ -1760,7 +1760,7 @@ slab: getEl('tab-slab'),
 profile: getEl('tab-profile'),
 };
 
-const loginTabs = ``$('button', getEl('loginTabs'));
+const loginTabs = $('button', getEl('loginTabs'));
 const signupForm = getEl('signupForm');
 const loginForm = getEl('loginForm');
 const otpSection = getEl('otpSection');
@@ -1885,7 +1885,7 @@ const fpStep2InputEmail = getEl('fpStep2InputEmail');
 const fpSendOtpBtn = getEl('fpSendOtpBtn');
 const fpBackToStep2 = getEl('fpBackToStep2');
 const fpOtpDestination = getEl('fpOtpDestination');
-const fpOtpDigits = ``$('.fp-otp-digit');
+const fpOtpDigits = $('.fp-otp-digit');
 const fpVerifyOtpBtn = getEl('fpVerifyOtpBtn');
 const fpOtpTimer = getEl('fpOtpTimer');
 const fpResendOtpBtn = getEl('fpResendOtpBtn');
