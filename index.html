@@ -1662,21 +1662,11 @@ SCREEN: MAIN APP
 <!-- ──────────────────────────────────────────────────────────────
 JAVASCRIPT — Firebase v10 Modular SDK via CDN
 ────────────────────────────────────────────────────────────── -->
-<script type="importmap">
-{
-"imports": {
-"firebase-app": "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js",
-"firebase-auth": "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js",
-"firebase-firestore": "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"
-}
-}
-</script>
-
 <script type="module">
 // ──────────────────────────────────────────────────────────────
 // IMPORTS
 // ──────────────────────────────────────────────────────────────
-import { initializeApp } from 'firebase-app';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
 import {
 getAuth,
 createUserWithEmailAndPassword,
@@ -1691,7 +1681,7 @@ PhoneAuthProvider,
 linkWithCredential,
 EmailAuthProvider,
 fetchSignInMethodsForEmail
-} from 'firebase-auth';
+} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
 import {
 getFirestore,
 doc,
@@ -1700,7 +1690,7 @@ getDoc,
 updateDoc,
 deleteDoc,
 serverTimestamp
-} from 'firebase-firestore';
+} from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
 
 // ──────────────────────────────────────────────────────────────
 // FIREBASE CONFIG
