@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" href="icon-512.png" />
 <style>
 /* ─── RESET & BASE ─── */
-*  {
+* {
 margin: 0;
 padding: 0;
 box-sizing: border-box;
@@ -515,37 +515,6 @@ background: #2d3545;
 margin: 4px 12px;
 }
 
-/* ─── TABS ─── */
-.tabs {
-display: flex;
-gap: 4px;
-background: #141a24;
-padding: 4px;
-border-radius: 12px;
-margin: 12px 16px 16px;
-position: sticky;
-top: 60px;
-z-index: 10;
-}
-.tabs button {
-flex: 1;
-padding: 10px 0;
-border-radius: 10px;
-font-weight: 600;
-font-size: 13px;
-color: #6a7a8e;
-transition: all 0.2s;
-}
-.tabs button.active {
-background: #2a3346;
-color: #fff;
-}
-.tabs button .tab-icon {
-display: block;
-font-size: 18px;
-margin-bottom: 2px;
-}
-
 .tab-content {
 display: none;
 padding: 0 16px 20px;
@@ -1016,13 +985,6 @@ gap: 6px;
 .stats-grid .stat .value {
 font-size: 17px;
 }
-.tabs button {
-font-size: 11px;
-padding: 8px 0;
-}
-.tabs button .tab-icon {
-font-size: 16px;
-}
 .modal {
 padding: 16px;
 }
@@ -1082,7 +1044,7 @@ justify-content: center;
 <body>
 
 <!-- ─── OFFLINE BADGE ─── -->
-<div id="offlineBadge" class="offline-badge">📡 You are offline — data is saved locally.</div>
+<div id="offlineBadge" class="offline-badge">You are offline — data is saved locally.</div>
 
 <!-- ─── TOAST ─── -->
 <div id="toast" class="toast"></div>
@@ -1133,7 +1095,7 @@ SCREEN: LOGIN
 <!-- OTP Section -->
 <div id="otpSection" class="otp-section">
 <p style="font-size:14px;color:#b0c0d0;text-align:center;">
-📱 We sent a code to <strong id="otpPhoneDisplay">+971 50 ****567</strong>
+We sent a code to <strong id="otpPhoneDisplay">+971 50 ****567</strong>
 </p>
 <div class="otp-digits">
 <input type="text" maxlength="1" class="otp-digit" />
@@ -1190,11 +1152,9 @@ By continuing you agree to our
 <div class="step-sub">Choose how you'd like to reset your password.</div>
 <div class="choice-grid">
 <button id="fpChooseEmail">
-<span class="icon">✉️</span>
 Email
 </button>
 <button id="fpChoosePhone">
-<span class="icon">📱</span>
 Phone
 </button>
 </div>
@@ -1259,7 +1219,7 @@ SCREEN: ONBOARDING RATES
 ────────────────────────────────────────────────────────────── -->
 <div id="onboarding-rates" class="screen">
 <div class="login-header" style="padding-top:20px;">
-<div class="logo">⚙️</div>
+<div class="logo"></div>
 <h1 style="font-size:22px;">Rates & Cutting</h1>
 <p style="font-size:14px;">Set your per-trip deductions and fuel cost.</p>
 </div>
@@ -1296,7 +1256,7 @@ SCREEN: ONBOARDING SLABS
 ────────────────────────────────────────────────────────────── -->
 <div id="onboarding-slabs" class="screen">
 <div class="login-header" style="padding-top:20px;">
-<div class="logo">📊</div>
+<div class="logo"></div>
 <h1 style="font-size:22px;">Slab & Cycle</h1>
 <p style="font-size:14px;">Define commission slabs and billing cycle.</p>
 </div>
@@ -1339,7 +1299,7 @@ SCREEN: MAIN APP
 
 <!-- App Header -->
 <header class="app-header" style="position:relative;">
-<div class="brand">🚕 Cab<span>Calc</span></div>
+<div class="brand">Cab<span>Calc</span></div>
 <button class="avatar-btn" id="profileBtn">
 <span class="placeholder" id="avatarPlaceholder">👤</span>
 <img id="avatarImage" style="display:none;" alt="avatar" />
@@ -1348,7 +1308,7 @@ SCREEN: MAIN APP
 <div class="dropdown" id="profileDropdown">
 <button class="dropdown-item" data-action="dashboard">Dashboard</button>
 <button class="dropdown-item" data-action="target">Slab & Cycle</button>
-<button class="dropdown-item" data-action="cutting">Rates</button>
+<button class="dropdown-item" data-action="cutting">Rates & Cutting</button>
 <button class="dropdown-item" data-action="settings">Profile</button>
 <div class="divider"></div>
 <button class="dropdown-item" data-action="invite">Invite Friend</button>
@@ -1433,7 +1393,7 @@ SCREEN: MAIN APP
 <input type="number" id="settingFuelRate" step="0.01" min="0" />
 </div>
 <button class="btn-primary" id="saveSettingsBtn">Save Rates</button>
-<div id="settingsSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Rates saved!</div>
+<div id="settingsSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">Rates saved!</div>
 </div>
 </div>
 
@@ -1475,7 +1435,7 @@ SCREEN: MAIN APP
 </table>
 </div>
 <button class="btn-primary" id="saveSlabsBtn" style="margin-top:10px;">Save Slabs</button>
-<div id="slabSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Slabs saved!</div>
+<div id="slabSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">Slabs saved!</div>
 </div>
 
 <!-- Cycle Settings -->
@@ -1492,7 +1452,7 @@ SCREEN: MAIN APP
 </div>
 </div>
 <button class="btn-primary" id="saveCycleBtn">Save Cycle</button>
-<div id="cycleStatus" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Cycle saved!</div>
+<div id="cycleStatus" class="text-green-600 text-sm mt-1 opacity-0 transition">Cycle saved!</div>
 </div>
 
 <!-- OCR Section -->
@@ -1541,7 +1501,7 @@ SCREEN: MAIN APP
 <input type="email" id="profileEmail" placeholder="you@example.com" />
 </div>
 <button class="btn-primary" id="saveProfileBtn">Save Profile</button>
-<div id="profileSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">✅ Profile saved!</div>
+<div id="profileSavedMsg" class="text-green-600 text-sm mt-1 opacity-0 transition">Profile saved!</div>
 </div>
 </div>
 
@@ -1601,7 +1561,7 @@ SCREEN: MAIN APP
 <span class="text-muted">Company Cut</span><span id="previewCompanyCut" class="font-bold">0.00 AED</span>
 <span class="text-muted">Fuel Cost</span><span id="previewFuel" class="font-bold">0.00 AED</span>
 <span class="text-muted">Salik</span><span id="previewSalik" class="font-bold">0.00 AED</span>
-<span class="text-muted" style="font-weight:600;">Net Earnings</span><span id="previewNet" class="font-bold" style="color:#4caf50;">0.00 AED</span>
+<span class="text-muted" style="font-weight:600;">Clean Money</span><span id="previewNet" class="font-bold" style="color:#4caf50;">0.00 AED</span>
 </div>
 </div>
 
@@ -1953,7 +1913,7 @@ return data;
 console.error('firebaseSaveData error:', err);
 // Fallback to local
 saveLocalData(data);
-showToast('⚠️ Cloud save failed, saved locally');
+showToast('Cloud save failed, saved locally');
 return data;
 }
 }
@@ -2120,9 +2080,6 @@ loadRatesSettings();
 if (tabId === 'profile') {
 loadProfileSettings();
 }
-document.querySelectorAll('.tabs button').forEach(btn => {
-btn.classList.toggle('active', btn.dataset.tab === tabId);
-});
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -2143,7 +2100,7 @@ clearInterval(otpTimerInterval);
 otpTimer.textContent = 'Expired';
 otpResendBtn.disabled = false;
 otpResendBtn.textContent = 'Resend';
-showToast('⌛ OTP expired. Tap Resend.');
+showToast('OTP expired. Tap Resend.');
 }
 }, 1000);
 }
@@ -2227,7 +2184,7 @@ signupData = { firstName, lastName, email, phone, password };
 const displayPhone = phone.length > 6 ? phone.slice(0, 4) + ' ****' + phone.slice(-4) : phone;
 otpPhoneDisplay.textContent = '+971 ' + (displayPhone || '50 ****567');
 otpSection.classList.add('open');
-showToast('📱 Sending verification code to +971 ' + displayPhone);
+showToast('Sending verification code to +971 ' + displayPhone);
 
 try {
 const fullPhone = '+971' + phone.replace(/^0+/, '');
@@ -2237,7 +2194,7 @@ startOtpTimer();
 if (otpDigits.length) otpDigits[0].focus();
 } catch (err) {
 console.error('sendOtp error:', err);
-showToast('❌ Failed to send OTP: ' + (err.message || 'unknown error'));
+showToast('Failed to send OTP: ' + (err.message || 'unknown error'));
 otpSection.classList.remove('open');
 }
 });
@@ -2279,12 +2236,12 @@ showToast('Please enter the 6-digit code.');
 return;
 }
 
-showToast('✅ Verifying...');
+showToast('Verifying...');
 
 try {
 const result = await firebaseVerifyOtp(signupVerificationId, code, true);
 // User is now signed in with phone
-showToast('✅ Phone verified! Creating your account...');
+showToast('Phone verified! Creating your account...');
 
 // Now create the email/password account and link it
 const { firstName, lastName, email, phone, password } = signupData;
@@ -2311,18 +2268,18 @@ onboardCycleEnd.value = data.settings.cycleEndDay || 15;
 renderOnboardSlabs(data.slabs || getDefaultSlabs());
 
 showScreen('onboardingRates');
-showToast('🎉 Account created! Set your rates.');
+showToast('Account created! Set your rates.');
 otpSection.classList.remove('open');
 } catch (err) {
 console.error('verifyOtp error:', err);
-showToast('❌ Verification failed: ' + (err.message || 'unknown error'));
+showToast('Verification failed: ' + (err.message || 'unknown error'));
 }
 });
 
 // OTP Resend
 otpResendBtn.addEventListener('click', async function() {
 const phone = signupPhoneInput.value.trim() || '50 ****567';
-showToast('📱 Sending new code to +971 ' + phone);
+showToast('Sending new code to +971 ' + phone);
 try {
 const fullPhone = '+971' + phone.replace(/^0+/, '');
 const result = await firebaseSendOtp(fullPhone, true);
@@ -2335,7 +2292,7 @@ this.disabled = false;
 this.textContent = 'Resend';
 }, 3000);
 } catch (err) {
-showToast('❌ Failed to resend OTP: ' + (err.message || 'unknown error'));
+showToast('Failed to resend OTP: ' + (err.message || 'unknown error'));
 }
 });
 
@@ -2350,14 +2307,14 @@ showToast('Please enter email and password.');
 return;
 }
 
-showToast('🔐 Logging in...');
+showToast('Logging in...');
 try {
 const userCred = await firebaseLogIn(email, password);
-showToast('✅ Welcome back!');
+showToast('Welcome back!');
 // Auth state listener will handle the rest
 } catch (err) {
 console.error('login error:', err);
-showToast('❌ Invalid credentials. Please try again.');
+showToast('Invalid credentials. Please try again.');
 }
 });
 
@@ -2462,13 +2419,13 @@ fpOtpDestination.textContent = value;
 // For email password reset, we just send the email directly
 try {
 await auth.sendPasswordResetEmail(value);
-showToast('📧 Password reset email sent to ' + value);
+showToast('Password reset email sent to ' + value);
 showForgotStep(4); // skip to set new password
 // In the flow, we go to step 4 directly since email reset is handled via email link
 // But we'll adapt: we'll show step 4 and let user set new password
 // Actually, sendPasswordResetEmail sends an email with a link, not an OTP.
 // For simplicity, we'll just show a message and go back to login.
-showToast('✅ Check your email for the reset link.');
+showToast('Check your email for the reset link.');
 setTimeout(() => {
 forgotPwContainer.style.display = 'none';
 loginForm.style.display = 'block';
@@ -2478,7 +2435,7 @@ loginTabs[0].classList.add('active');
 }, 2000);
 return;
 } catch (err) {
-showToast('❌ Failed to send reset email: ' + (err.message || 'unknown error'));
+showToast('Failed to send reset email: ' + (err.message || 'unknown error'));
 return;
 }
 } else {
@@ -2494,14 +2451,14 @@ try {
 const fullPhone = '+971' + value.replace(/^0+/, '');
 const result = await firebaseSendOtp(fullPhone, false);
 fpVerificationId = result.verificationId;
-showToast('📱 OTP sent to +971 ' + display);
+showToast('OTP sent to +971 ' + display);
 showForgotStep(3);
 startFpOtpTimer();
 fpResendOtpBtn.disabled = true;
 fpResendOtpBtn.textContent = 'Resend';
 if (fpOtpDigits.length) fpOtpDigits[0].focus();
 } catch (err) {
-showToast('❌ Failed to send OTP: ' + (err.message || 'unknown error'));
+showToast('Failed to send OTP: ' + (err.message || 'unknown error'));
 }
 }
 });
@@ -2519,7 +2476,7 @@ clearInterval(fpOtpTimerInterval);
 fpOtpTimer.textContent = 'Expired';
 fpResendOtpBtn.disabled = false;
 fpResendOtpBtn.textContent = 'Resend';
-showToast('⌛ OTP expired. Tap Resend.');
+showToast('OTP expired. Tap Resend.');
 }
 }, 1000);
 }
@@ -2562,23 +2519,23 @@ return;
 }
 try {
 const result = await firebaseVerifyOtp(fpVerificationId, code, false);
-showToast('✅ Phone verified! You can now reset your password.');
+showToast('Phone verified! You can now reset your password.');
 // For phone reset, we use the phone auth to sign in, then we can update password
 // Since the user is signed in with phone, we can update their password
 // But we need to link email/password first if not already linked.
 // For simplicity, we'll just show a message and let the user reset via email.
-showToast('✅ Phone verified. Please use email reset instead.');
+showToast('Phone verified. Please use email reset instead.');
 showForgotStep(4);
 fpNewPassword.focus();
 } catch (err) {
-showToast('❌ Verification failed: ' + (err.message || 'unknown error'));
+showToast('Verification failed: ' + (err.message || 'unknown error'));
 }
 });
 
 // FP Resend OTP
 fpResendOtpBtn.addEventListener('click', async function() {
 const value = fpStep2Input.value.trim();
-showToast('📱 Sending new code...');
+showToast('Sending new code...');
 try {
 const fullPhone = '+971' + value.replace(/^0+/, '');
 const result = await firebaseSendOtp(fullPhone, false);
@@ -2591,7 +2548,7 @@ this.disabled = false;
 this.textContent = 'Resend';
 }, 3000);
 } catch (err) {
-showToast('❌ Failed to resend OTP: ' + (err.message || 'unknown error'));
+showToast('Failed to resend OTP: ' + (err.message || 'unknown error'));
 }
 });
 
@@ -2610,25 +2567,25 @@ return;
 try {
 if (auth.currentUser) {
 await auth.currentUser.updatePassword(pw);
-showToast('✅ Password updated successfully!');
+showToast('Password updated successfully!');
 } else {
-showToast('⚠️ Please sign in first to update your password.');
+showToast('Please sign in first to update your password.');
 }
 forgotPwContainer.style.display = 'none';
 loginForm.style.display = 'block';
 signupForm.style.display = 'none';
 loginTabs.forEach(t => t.classList.remove('active'));
 loginTabs[0].classList.add('active');
-showToast('🔐 You can now log in with your new password.');
+showToast('You can now log in with your new password.');
 } catch (err) {
-showToast('❌ Failed to update password: ' + (err.message || 'unknown error'));
+showToast('Failed to update password: ' + (err.message || 'unknown error'));
 }
 });
 
 // ─── Social Login ───
 async function handleSocialLogin(provider) {
 if (provider === 'google') {
-showToast('🔓 Signing in with Google...');
+showToast('Signing in with Google...');
 try {
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 const result = await auth.signInWithPopup(googleProvider);
@@ -2664,13 +2621,13 @@ saveLocalData(data);
 // to onboarding (new user) or the main app (returning user).
 } catch (err) {
 console.error('Google sign-in error:', err);
-showToast('❌ Google sign-in failed: ' + (err.message || 'unknown error'));
+showToast('Google sign-in failed: ' + (err.message || 'unknown error'));
 }
 return;
 }
 
 if (provider === 'facebook') {
-showToast('🔓 Signing in with Facebook...');
+showToast('Signing in with Facebook...');
 try {
 const facebookProvider = new firebase.auth.FacebookAuthProvider();
 await auth.signInWithRedirect(facebookProvider);
@@ -2680,7 +2637,7 @@ await auth.signInWithRedirect(facebookProvider);
 // onAuthStateChanged() routes the user automatically.
 } catch (err) {
 console.error('Facebook sign-in error:', err);
-showToast('❌ Facebook sign-in failed: ' + (err.message || 'unknown error'));
+showToast('Facebook sign-in failed: ' + (err.message || 'unknown error'));
 }
 return;
 }
@@ -2692,7 +2649,7 @@ picture = null;
 if (provider === 'x') { name = 'Khalid Al Maktoum';
 email = 'khalid.x@example.com'; }
 
-showToast('🔓 Signing in with ' + provider + '...');
+showToast('Signing in with ' + provider + '...');
 
 // For social login, we create a mock user and proceed
 // In production, you'd use Firebase social providers
@@ -2711,7 +2668,7 @@ onboardCycleEnd.value = appData.settings.cycleEndDay || 15;
 renderOnboardSlabs(appData.slabs || getDefaultSlabs());
 
 showScreen('onboardingRates');
-showToast('🎉 Welcome, ' + name + '! Set your rates.');
+showToast('Welcome, ' + name + '! Set your rates.');
 }
 
 socialGoogle.addEventListener('click', function() { handleSocialLogin('google'); });
@@ -2813,7 +2770,7 @@ const newMin = last ? last.max + 1 : 0;
 const newMax = last ? last.max + 1000 : 5000;
 onboardSlabs.push({ min: newMin, max: newMax, pct: 20 });
 renderOnboardSlabs(onboardSlabs);
-showToast('➕ New slab added');
+showToast('New slab added');
 });
 
 onboardSlabsBack.addEventListener('click', function() {
@@ -2836,7 +2793,7 @@ break;
 }
 }
 if (!valid) {
-showToast('⚠️ Please fix slab values (min ≤ max, 0–100%).');
+showToast('Please fix slab values (min ≤ max, 0–100%).');
 return;
 }
 
@@ -2870,7 +2827,7 @@ data.profile.email = signupData.email || '';
 // Save to Firestore if user is logged in
 await firebaseSaveData(data);
 
-showToast('🎉 Welcome to CabCalc!');
+showToast('Welcome to CabCalc!');
 setTimeout(() => {
 showScreen('mainApp');
 updateAvatar(data.profile);
@@ -3035,7 +2992,7 @@ saveLocalData(data);
 firebaseSaveData(data).catch(() => {});
 renderDashboard();
 updateStats();
-showToast('🗑️ Shift deleted');
+showToast('Shift deleted');
 }
 });
 });
@@ -3173,10 +3130,10 @@ const shiftData = { date, revenue, totalTrips, airportTrips, careemTrips, km, sa
 
 if (idx >= 0 && idx < data.shifts.length) {
 data.shifts[idx] = shiftData;
-showToast('✅ Shift updated');
+showToast('Shift updated');
 } else {
 data.shifts.push(shiftData);
-showToast('✅ Shift saved');
+showToast('Shift saved');
 }
 
 saveLocalData(data);
@@ -3217,7 +3174,7 @@ saveLocalData(data);
 await firebaseSaveData(data).catch(() => {});
 settingsSavedMsg.classList.remove('opacity-0');
 settingsSavedMsg.classList.add('opacity-100');
-showToast('💾 Rates saved');
+showToast('Rates saved');
 renderDashboard();
 updateStats();
 });
@@ -3339,7 +3296,7 @@ const newMin = last ? last.max + 1 : 0;
 const newMax = last ? last.max + 1000 : 5000;
 currentSlabs.push({ min: newMin, max: newMax, pct: 20 });
 renderSlabTable(currentSlabs);
-showToast('➕ New slab added');
+showToast('New slab added');
 });
 
 saveSlabsBtn.addEventListener('click', async function() {
@@ -3356,7 +3313,7 @@ break;
 }
 }
 if (!valid) {
-showToast('⚠️ Please fix slab values (min ≤ max, 0–100%).');
+showToast('Please fix slab values (min ≤ max, 0–100%).');
 return;
 }
 const data = loadLocalData();
@@ -3365,7 +3322,7 @@ saveLocalData(data);
 await firebaseSaveData(data).catch(() => {});
 slabSavedMsg.classList.remove('opacity-0');
 slabSavedMsg.classList.add('opacity-100');
-showToast('💾 Slabs saved');
+showToast('Slabs saved');
 updateCycleDisplay();
 renderDashboard();
 updateStats();
@@ -3391,7 +3348,7 @@ currentCycleEnd = end;
 
 cycleStatus.classList.remove('opacity-0');
 cycleStatus.classList.add('opacity-100');
-showToast('📅 Cycle saved');
+showToast('Cycle saved');
 updateCycleDisplay();
 renderDashboard();
 updateStats();
@@ -3415,7 +3372,7 @@ slabImagePreview.innerHTML = '<img src="' + ev.target.result + '" alt="Slab imag
 slabOcrImageData = ev.target.result;
 slabOcrBtn.disabled = false;
 ocrStatus.className = 'ocr-status mt-1';
-ocrStatus.textContent = '📸 Image loaded. Tap Auto‑Fill to extract slabs.';
+ocrStatus.textContent = 'Image loaded. Tap Auto‑Fill to extract slabs.';
 ocrStatus.classList.remove('hidden');
 };
 reader.readAsDataURL(file);
@@ -3423,7 +3380,7 @@ reader.readAsDataURL(file);
 
 slabCameraBtn.addEventListener('click', function() {
 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-showToast('📷 Camera not supported on this device.');
+showToast('Camera not supported on this device.');
 return;
 }
 const input = document.createElement('input');
@@ -3439,7 +3396,7 @@ slabImagePreview.innerHTML = '<img src="' + ev.target.result + '" alt="Slab imag
 slabOcrImageData = ev.target.result;
 slabOcrBtn.disabled = false;
 ocrStatus.className = 'ocr-status mt-1';
-ocrStatus.textContent = '📸 Image captured. Tap Auto‑Fill to extract slabs.';
+ocrStatus.textContent = 'Image captured. Tap Auto‑Fill to extract slabs.';
 ocrStatus.classList.remove('hidden');
 };
 reader.readAsDataURL(file);
@@ -3454,7 +3411,7 @@ return;
 }
 
 ocrStatus.className = 'ocr-status mt-1 loading';
-ocrStatus.textContent = '🔍 Analyzing image with OCR...';
+ocrStatus.textContent = 'Analyzing image with OCR...';
 ocrStatus.classList.remove('hidden');
 slabOcrBtn.disabled = true;
 
@@ -3462,37 +3419,37 @@ if (typeof Tesseract !== 'undefined') {
 Tesseract.recognize(slabOcrImageData, 'eng', {
 logger: function(m) {
 if (m.status === 'recognizing text') {
-ocrStatus.textContent = '🔍 OCR: ' + Math.round(m.progress * 100) + '%';
+ocrStatus.textContent = 'OCR: ' + Math.round(m.progress * 100) + '%';
 }
 }
 })
 .then(function(result) {
 const text = result.data.text;
 ocrStatus.className = 'ocr-status mt-1 success';
-ocrStatus.textContent = '✅ OCR complete. Extracted ' + text.length + ' characters.';
+ocrStatus.textContent = 'OCR complete. Extracted ' + text.length + ' characters.';
 slabOcrBtn.disabled = false;
 
 const extracted = extractSlabsFromText(text);
 if (extracted && extracted.length) {
 currentSlabs = extracted;
 renderSlabTable(currentSlabs);
-showToast('📊 ' + extracted.length + ' slabs extracted from image!');
+showToast('' + extracted.length + ' slabs extracted from image!');
 updateCycleDisplay();
 } else {
-showToast('⚠️ Could not parse slabs from image. Try a clearer photo.');
+showToast('Could not parse slabs from image. Try a clearer photo.');
 }
 })
 .catch(function(err) {
 ocrStatus.className = 'ocr-status mt-1 error';
-ocrStatus.textContent = '❌ OCR error: ' + err.message;
+ocrStatus.textContent = 'OCR error: ' + err.message;
 slabOcrBtn.disabled = false;
-showToast('❌ OCR failed. Please enter slabs manually.');
+showToast('OCR failed. Please enter slabs manually.');
 });
 } else {
 ocrStatus.className = 'ocr-status mt-1 error';
-ocrStatus.textContent = '❌ Tesseract library not loaded.';
+ocrStatus.textContent = 'Tesseract library not loaded.';
 slabOcrBtn.disabled = false;
-showToast('❌ OCR library not available.');
+showToast('OCR library not available.');
 }
 });
 
@@ -3595,7 +3552,7 @@ await firebaseSaveData(data).catch(() => {});
 profileSavedMsg.classList.remove('opacity-0');
 profileSavedMsg.classList.add('opacity-100');
 updateAvatar(data.profile);
-showToast('💾 Profile saved');
+showToast('Profile saved');
 });
 
 profilePicUploadBtn.addEventListener('click', function() {
@@ -3604,7 +3561,7 @@ profilePicInput.click();
 
 profilePicCameraBtn.addEventListener('click', function() {
 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-showToast('📷 Camera not supported.');
+showToast('Camera not supported.');
 return;
 }
 const input = document.createElement('input');
@@ -3626,7 +3583,7 @@ data.profile.picture = imgData;
 saveLocalData(data);
 firebaseSaveData(data).catch(() => {});
 updateAvatar(data.profile);
-showToast('📷 Profile picture updated');
+showToast('Profile picture updated');
 };
 reader.readAsDataURL(file);
 };
@@ -3660,7 +3617,7 @@ data.profile.picture = imgData;
 saveLocalData(data);
 firebaseSaveData(data).catch(() => {});
 updateAvatar(data.profile);
-showToast('📸 Profile picture updated');
+showToast('Profile picture updated');
 };
 reader.readAsDataURL(file);
 });
@@ -3731,13 +3688,13 @@ const data = JSON.parse(ev.target.result);
 if (data.shifts && data.settings && data.slabs) {
 saveLocalData(data);
 firebaseSaveData(data).catch(() => {});
-showToast('✅ Backup imported successfully!');
+showToast('Backup imported successfully!');
 initializeApp();
 } else {
-showToast('❌ Invalid backup file.');
+showToast('Invalid backup file.');
 }
 } catch (_) {
-showToast('❌ Could not parse backup file.');
+showToast('Could not parse backup file.');
 }
 };
 reader.readAsText(file);
@@ -3754,7 +3711,7 @@ a.href = url;
 a.download = 'cabcalc_backup_' + new Date().toISOString().slice(0, 10) + '.json';
 a.click();
 URL.revokeObjectURL(url);
-showToast('📤 Backup exported');
+showToast('Backup exported');
 }
 
 function handleInvite() {
@@ -3768,9 +3725,9 @@ document.body.appendChild(dummy);
 dummy.select();
 try {
 document.execCommand('copy');
-showToast('📤 Link copied! Share with friends.');
+showToast('Link copied! Share with friends.');
 } catch (_) {
-showToast('📤 Share: ' + url);
+showToast('Share: ' + url);
 }
 document.body.removeChild(dummy);
 }
@@ -3784,7 +3741,7 @@ const data = loadLocalData();
 data.profile = { name: '', phone: '', email: '', picture: null };
 saveLocalData(data);
 currentUser = null;
-showToast('🚪 Logged out');
+showToast('Logged out');
 signupData = {};
 setTimeout(() => {
 showScreen('login');
@@ -3817,7 +3774,7 @@ showToast('Please enter a message.');
 return;
 }
 console.log('[Feedback]', { message, email });
-showToast('💬 Thank you for your feedback!');
+showToast('Thank you for your feedback!');
 feedbackForm.reset();
 closeFeedback();
 });
@@ -3880,7 +3837,7 @@ saveLocalData(data);
 }
 }).catch((err) => {
 console.error('Redirect sign-in error:', err);
-showToast('❌ Sign-in failed: ' + (err.message || 'unknown error'));
+showToast('Sign-in failed: ' + (err.message || 'unknown error'));
 });
 
 // ──────────────────────────────────────────────────────────────
@@ -3917,7 +3874,7 @@ updateStats();
 loadRatesSettings();
 renderSlabTab();
 updateOfflineStatus();
-showToast('👋 Welcome back, ' + (profile.name || 'Driver') + '!');
+showToast('Welcome back, ' + (profile.name || 'Driver') + '!');
 } else {
 // New user, go to onboarding
 onboardNormalCut.value = data.settings.normalCut || 4.50;
@@ -3928,7 +3885,7 @@ onboardCycleStart.value = data.settings.cycleStartDay || 1;
 onboardCycleEnd.value = data.settings.cycleEndDay || 15;
 renderOnboardSlabs(data.slabs || getDefaultSlabs());
 showScreen('onboardingRates');
-showToast('👋 Welcome! Set your rates.');
+showToast('Welcome! Set your rates.');
 }
 } else {
 currentUser = null;
