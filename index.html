@@ -1299,7 +1299,10 @@ SCREEN: MAIN APP
 
 <!-- App Header -->
 <header class="app-header" style="position:relative;">
-<div class="brand">Cab<span>Calc</span></div>
+<div style="display: flex; align-items: center;">
+<button id="headerBackBtn" style="display:none; margin-right:12px; font-size:22px; color:#b0c0d0; padding-right:8px; line-height: 1;">←</button>
+<div class="brand"><img src="icon-512.png" alt="Logo" style="width:24px; height:24px; border-radius:6px; margin-right:6px;" /> Cab<span>Calc</span></div>
+</div>
 <button class="avatar-btn" id="profileBtn">
 <span class="placeholder" id="avatarPlaceholder">👤</span>
 <img id="avatarImage" style="display:none;" alt="avatar" />
@@ -2068,19 +2071,38 @@ if (tabs[tabId]) {
 tabs[tabId].classList.add('active');
 }
 profileDropdown.classList.remove('open');
+
+const backBtn = document.getElementById('headerBackBtn');
 if (tabId === 'dashboard') {
 renderDashboard();
+if(backBtn) backBtn.style.display = 'none';
+} else {
+if(backBtn) backBtn.style.display = 'block';
 }
-if (tabId === 'slab') {
-renderSlabTab();
+
+if (tabId === 'slab') renderSlabTab();
+if (tabId === 'rates') loadRatesSettings();
+if (tabId === 'profile') loadProfileSettings();
+
+// Push state for mobile hardware back button
+if (!history.state || history.state.tab !== tabId) {
+history.pushState({ tab: tabId }, '', '#' + tabId);
 }
-if (tabId === 'rates') {
-loadRatesSettings();
 }
-if (tabId === 'profile') {
-loadProfileSettings();
+
+// Handle mobile hardware back button
+window.addEventListener('popstate', (e) => {
+if (e.state && e.state.tab) {
+switchTab(e.state.tab);
+} else {
+switchTab('dashboard');
 }
-}
+});
+
+// Handle UI Back Button click
+document.getElementById('headerBackBtn').addEventListener('click', () => {
+switchTab('dashboard');
+});
 
 // ──────────────────────────────────────────────────────────────
 // LOGIN / SIGNUP
