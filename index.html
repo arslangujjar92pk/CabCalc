@@ -1075,7 +1075,9 @@ display: flex;
 justify-content: center;
 }
 </style>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/es-module-shims/1.8.0/es-module-shims.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
@@ -1661,46 +1663,13 @@ SCREEN: MAIN APP
 <div id="recaptcha-container"></div>
 
 <!-- ──────────────────────────────────────────────────────────────
-JAVASCRIPT — Firebase v10 Modular SDK via CDN
+JAVASCRIPT — Firebase v10 Compat SDK via CDN (standard scripts, no ES modules)
 ────────────────────────────────────────────────────────────── -->
-<script type="importmap">
-{
-  "imports": {
-    "firebase-app": "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js",
-    "firebase-auth": "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js",
-    "firebase-firestore": "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"
-  }
-}
-</script>
-<script type="module">
+<script>
 // ──────────────────────────────────────────────────────────────
-// IMPORTS
+// Firebase v10 Compat SDK — loaded via standard <script> tags above
+// (no ES modules, no importmap — works on old Android/WebView browsers)
 // ──────────────────────────────────────────────────────────────
-import { initializeApp } from 'firebase-app';
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-signOut,
-sendPasswordResetEmail,
-onAuthStateChanged,
-RecaptchaVerifier,
-signInWithPhoneNumber,
-updatePhoneNumber,
-PhoneAuthProvider,
-linkWithCredential,
-EmailAuthProvider,
-fetchSignInMethodsForEmail
-} from 'firebase-auth';
-import {
-getFirestore,
-doc,
-setDoc,
-getDoc,
-updateDoc,
-deleteDoc,
-serverTimestamp
-} from 'firebase-firestore';
 
 // ──────────────────────────────────────────────────────────────
 // FIREBASE CONFIG
@@ -1717,9 +1686,9 @@ appId: "1:106060084837:web:98b13dec33f128d7dbb88c"
 // ──────────────────────────────────────────────────────────────
 // INIT FIREBASE
 // ──────────────────────────────────────────────────────────────
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // ──────────────────────────────────────────────────────────────
 // STATE
@@ -1978,13 +1947,13 @@ saveLocalData(data);
 return data;
 }
 try {
-const docRef = doc(db, 'users', currentUser.uid);
-await setDoc(docRef, {
+const docRef = db.collection('users').doc(currentUser.uid);
+await docRef.set({
 shifts: data.shifts || [],
 settings: data.settings || getDefaultSettings(),
 slabs: data.slabs || getDefaultSlabs(),
 profile: data.profile || { name: '', phone: '', email: '', picture: null },
-updatedAt: serverTimestamp()
+updatedAt: firebase.firestore.FieldValue.serverTimestamp()
 }, { merge: true });
 saveLocalData(data);
 return data;
@@ -2000,9 +1969,9 @@ return data;
 async function firebaseLoadData(uid) {
 if (!uid) return loadLocalData();
 try {
-const docRef = doc(db, 'users', uid);
-const snap = await getDoc(docRef);
-if (snap.exists()) {
+const docRef = db.collection('users').doc(uid);
+const snap = await docRef.get();
+if (snap.exists) {
 const data = snap.data();
 const merged = {
 shifts: data.shifts || [],
@@ -2033,23 +2002,23 @@ try {
 let userCred;
 if (auth.currentUser && auth.currentUser.phoneNumber) {
 // User is signed in with phone — link email/password
-const credential = EmailAuthProvider.credential(email, password);
-userCred = await linkWithCredential(auth.currentUser, credential);
+const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+userCred = await auth.currentUser.linkWithCredential(credential);
 } else {
 // Regular email/password signup
-userCred = await createUserWithEmailAndPassword(auth, email, password);
+userCred = await auth.createUserWithEmailAndPassword(email, password);
 }
 const user = userCred.user;
 
 // Save profile to Firestore
-const docRef = doc(db, 'users', user.uid);
-await setDoc(docRef, {
+const docRef = db.collection('users').doc(user.uid);
+await docRef.set({
 profile: profile || { name: '', phone: '', email: email, picture: null },
 shifts: [],
 settings: getDefaultSettings(),
 slabs: getDefaultSlabs(),
-createdAt: serverTimestamp(),
-updatedAt: serverTimestamp()
+createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+updatedAt: firebase.firestore.FieldValue.serverTimestamp()
 }, { merge: true });
 
 // Also save locally
@@ -2065,7 +2034,7 @@ throw err;
 }
 
 async function firebaseLogIn(email, password) {
-const userCred = await signInWithEmailAndPassword(auth, email, password);
+const userCred = await auth.signInWithEmailAndPassword(email, password);
 return userCred;
 }
 
@@ -2078,10 +2047,10 @@ phone = '+971' + phone.replace(/^0+/, '');
 phone = phone.replace(/[^\d+]/g, '');
 
 // Create RecaptchaVerifier
-const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+const verifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
 'size': 'invisible',
 'callback': () => { /* resolved */ }
-});
+}, auth);
 
 if (isSignup) {
 signupRecaptchaVerifier = verifier;
@@ -2089,7 +2058,7 @@ signupRecaptchaVerifier = verifier;
 forgotRecaptchaVerifier = verifier;
 }
 
-const result = await signInWithPhoneNumber(auth, phone, verifier);
+const result = await auth.signInWithPhoneNumber(phone, verifier);
 if (isSignup) {
 signupVerificationId = result.verificationId;
 } else {
@@ -2102,9 +2071,9 @@ async function firebaseVerifyOtp(verificationId, code, isSignup = true) {
 if (!verificationId) {
 throw new Error('No verification ID found. Please request a new OTP.');
 }
-const credential = PhoneAuthProvider.credential(verificationId, code);
+const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, code);
 // This signs the user in with phone
-const userCred = await signInWithPhoneNumber(auth, credential);
+const userCred = await auth.signInWithCredential(credential);
 return userCred;
 }
 
@@ -2500,7 +2469,7 @@ return;
 fpOtpDestination.textContent = value;
 // For email password reset, we just send the email directly
 try {
-await sendPasswordResetEmail(auth, value);
+await auth.sendPasswordResetEmail(value);
 showToast('📧 Password reset email sent to ' + value);
 showForgotStep(4); // skip to set new password
 // In the flow, we go to step 4 directly since email reset is handled via email link
@@ -3755,7 +3724,7 @@ document.body.removeChild(dummy);
 
 async function handleLogout() {
 try {
-await signOut(auth);
+await auth.signOut();
 } catch (_) {}
 const data = loadLocalData();
 data.profile = { name: '', phone: '', email: '', picture: null };
@@ -3816,7 +3785,7 @@ window.addEventListener('offline', updateOfflineStatus);
 // ──────────────────────────────────────────────────────────────
 // AUTH STATE LISTENER
 // ──────────────────────────────────────────────────────────────
-onAuthStateChanged(auth, async (user) => {
+auth.onAuthStateChanged(async (user) => {
 if (user) {
 currentUser = user;
 console.log('✅ User signed in:', user.uid);
@@ -3929,7 +3898,7 @@ onboardCycleStart.value = initialData.settings.cycleStartDay || 1;
 onboardCycleEnd.value = initialData.settings.cycleEndDay || 15;
 renderOnboardSlabs(initialData.slabs || getDefaultSlabs());
 
-console.log('🚕 CabCalc v2 — Firebase v10 Modular SDK connected');
+console.log('🚕 CabCalc v2 — Firebase v10 Compat SDK connected');
 console.log('📦 Data storage: Firestore + localStorage fallback');
 console.log('📱 ' + (navigator.onLine ? 'Online' : 'Offline') + ' mode');
 
