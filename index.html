@@ -2677,12 +2677,27 @@ showToast('❌ Google sign-in failed: ' + (err.message || 'unknown error'));
 return;
 }
 
-// Facebook / X — not yet wired up to real providers
+if (provider === 'facebook') {
+showToast('🔓 Signing in with Facebook...');
+try {
+const facebookProvider = new firebase.auth.FacebookAuthProvider();
+await auth.signInWithRedirect(facebookProvider);
+// The browser now navigates away to Facebook's login page.
+// When it returns, the getRedirectResult() handler (registered
+// near the auth state listener) captures the profile, and
+// onAuthStateChanged() routes the user automatically.
+} catch (err) {
+console.error('Facebook sign-in error:', err);
+showToast('❌ Facebook sign-in failed: ' + (err.message || 'unknown error'));
+}
+return;
+}
+
+// X — not yet wired up to a real provider
 let name = '',
 email = '',
 picture = null;
-if (provider === 'facebook') { name = 'Sara Al Maktoum';
-email = 'sara.fb@example.com'; } else if (provider === 'x') { name = 'Khalid Al Maktoum';
+if (provider === 'x') { name = 'Khalid Al Maktoum';
 email = 'khalid.x@example.com'; }
 
 showToast('🔓 Signing in with ' + provider + '...');
@@ -3828,6 +3843,53 @@ offlineBadge.classList.remove('show');
 
 window.addEventListener('online', updateOfflineStatus);
 window.addEventListener('offline', updateOfflineStatus);
+
+// ──────────────────────────────────────────────────────────────
+// REDIRECT RESULT (Facebook signInWithRedirect returns here)
+// ──────────────────────────────────────────────────────────────
+auth.getRedirectResult().then(async (result) => {
+if (result && result.user) {
+const user = result.user;
+const isNewUser = !!(result.additionalUserInfo && result.additionalUserInfo.isNewUser);
+
+const profile = {
+name: user.displayName || '',
+email: user.email || '',
+phone: user.phoneNumber || '',
+picture: user.photoURL || null
+};
+
+if (isNewUser) {
+// Brand new user — create their Firestore profile doc
+const docRef = db.collection('users').doc(user.uid);
+await docRef.set({
+profile,
+shifts: [],
+settings: getDefaultSettings(),
+slabs: getDefaultSlabs(),
+createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+}, { merge: true });
+} else {
+// Returning user — just refresh their profile fields
+await db.collection('users').doc(user.uid).set({
+profile,
+updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+}, { merge: true });
+}
+
+// Save locally too
+const data = loadLocalData();
+data.profile = profile;
+saveLocalData(data);
+
+// onAuthStateChanged will fire automatically and route the user
+// to onboarding (new user) or the main app (returning user).
+}
+}).catch((err) => {
+console.error('Redirect sign-in error:', err);
+showToast('❌ Sign-in failed: ' + (err.message || 'unknown error'));
+});
 
 // ──────────────────────────────────────────────────────────────
 // AUTH STATE LISTENER
